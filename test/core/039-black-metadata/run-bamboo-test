@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -e
+
+# generate the dax
+export PYTHONPATH=`pegasus-config --python`
+./blackdiamond.py 

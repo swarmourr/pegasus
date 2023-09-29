@@ -1,0 +1,8 @@
+<?php
+
+function pegasus_download_install() {
+}
+
+function pegasus_download_uninstall() {
+}
+

@@ -1,0 +1,72 @@
+
+
+NOTE: Do not copy and paste the commands below without double checking.
+      The commands contain version numbers which are probably not
+      correct for what you are trying to do!
+
+
+1.  Clone and move to the specific branch. For example:
+
+       git clone https://github.com/pegasus-isi/pegasus.git
+       cd pegasus
+       git checkout N.M
+
+2.  Set the version number in build.properties and commit:
+
+       vim build.properties
+       git commit -a -m "Setting version for tag"
+
+3.  Tag. Example:
+
+        git tag -a -m "Created tag for N.M.O" N.M.O
+
+4.  Open branch for new checkins with new version:
+
+       vim build.properties
+       git commit -a -m "Branch reopen for checkins"
+
+5.  Bring the branch back to master, but ignore the commits.
+
+       git checkout master
+       git merge --no-commit N.M
+    (edit build.properties)
+       git commit -a -m "Merged N.M"
+
+6.  git push --tags
+
+7.  Build with Bamboo
+
+8.  Build dnf/apt repos. First copy the debs and rpms into
+    their final place in the debian/rhel/ubuntu top level
+    trees, and then run pegasus-update-prod-repos as the
+    bamboo user on download.pegasus.isi.edu
+
+9.  Publish Python packages to PypI
+
+```bash
+# Install Twine (Once)
+pip install twine
+
+# Create .pypirc (Once)
+$ cat ~/.pypirc
+[distutils]
+  index-servers=
+    pypi
+    test-pypi
+
+[pypi]
+  username: <pypi-username>
+  password: <pypi-password>
+
+# WARNING: PyPi only allows uploading of files for a version once.
+$ twine upload <python-package>
+```
+
+10. Update Homebrew formula in repo https://github.com/pegasus-isi/homebrew-tools.git.
+
+11. Change the symbolic link for the latest documentation to point
+    to latest stable release
+    https://pegasus.isi.edu/documentation/
+
+12. Send annouce email to pegasus-announce@mailman.isi.edu
+
