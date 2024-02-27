@@ -1,0 +1,561 @@
+x-pegasus:
+  apiLang: python
+  createdBy: poseidon
+  createdOn: 02-20-24T14:02:07Z
+pegasus: 5.0.4
+name: federated-learning-example-tracker
+metadata:
+  wf_track: 'True'
+siteCatalog:
+  sites:
+  - name: local
+    directories:
+    - type: sharedScratch
+      path: /home/poseidon/workflows/FL-workflow/federated-learning-fedstack-PM/scratch
+      sharedFileSystem: false
+      fileServers:
+      - url: file:///home/poseidon/workflows/FL-workflow/federated-learning-fedstack-PM/scratch
+        operation: all
+    - type: localStorage
+      path: /home/poseidon/workflows/FL-workflow/federated-learning-fedstack-PM/output
+      sharedFileSystem: false
+      fileServers:
+      - url: file:///home/poseidon/workflows/FL-workflow/federated-learning-fedstack-PM/output
+        operation: all
+  - name: condorpool
+    directories: []
+    profiles:
+      condor:
+        universe: vanilla
+      pegasus:
+        style: condor
+replicaCatalog:
+  replicas:
+  - lfn: source_data
+    pfns:
+    - site: local
+      pfn: /home/poseidon/workflows/FL-workflow/federated-learning-fedstack-PM/data/oneyeardata.csv
+  - lfn: cred
+    pfns:
+    - site: local
+      pfn: /home/poseidon/.pegasus/dvcproject-credentials.json
+  - lfn: metadata
+    pfns:
+    - site: local
+      pfn: /home/poseidon/.pegasus/metadata.yaml
+  - lfn: wf
+    pfns:
+    - site: local
+      pfn: /home/poseidon/pegasus-integration/pegasus/packages/pegasus-api/test/workflow-example/workflow.yml
+  - lfn: init_env
+    pfns:
+    - site: local
+      pfn: /home/poseidon/workflows/FL-workflow/federated-learning-fedstack-PM/bin/init_env.py
+  - lfn: local_clustering
+    pfns:
+    - site: local
+      pfn: /home/poseidon/workflows/FL-workflow/federated-learning-fedstack-PM/bin/localClustering.py
+  - lfn: global_clustering
+    pfns:
+    - site: local
+      pfn: /home/poseidon/workflows/FL-workflow/federated-learning-fedstack-PM/bin/globalClustering.py
+transformationCatalog:
+  transformations:
+  - name: init_env
+    sites:
+    - name: condorpool
+      pfn: /home/poseidon/workflows/FL-workflow/federated-learning-fedstack-PM/bin/init_env.py
+      type: stageable
+      container: federated_learning_container
+    metadata:
+      track_Trans: 'True'
+  - name: local_clustering
+    sites:
+    - name: condorpool
+      pfn: /home/poseidon/workflows/FL-workflow/federated-learning-fedstack-PM/bin/localClustering.py
+      type: stageable
+      container: federated_learning_container
+    metadata:
+      track_Trans: 'True'
+  - name: global_clustering
+    sites:
+    - name: condorpool
+      pfn: /home/poseidon/workflows/FL-workflow/federated-learning-fedstack-PM/bin/globalClustering.py
+      type: stageable
+      container: federated_learning_container
+    metadata:
+      track_Trans: 'True'
+  - name: data_tracker
+    sites:
+    - name: condorpool
+      pfn: /home/poseidon-data/workflows/FL-workflow/FlVenv/lib/python3.8/site-packages/Pegasus/api/Versionning/versiondata.py
+      type: stageable
+      container: federated_learning_container
+  - name: combiner
+    sites:
+    - name: condorpool
+      pfn: /home/poseidon-data/workflows/FL-workflow/FlVenv/lib/python3.8/site-packages/Pegasus/api/Versionning/pegasus_yaml_combiner.py
+      type: stageable
+      container: federated_learning_container
+  - name: version_transformations
+    sites:
+    - name: condorpool
+      pfn: /home/poseidon-data/workflows/FL-workflow/FlVenv/lib/python3.8/site-packages/Pegasus/api/Versionning/transformationVersioning.py
+      type: stageable
+      container: federated_learning_container
+  - name: cp
+    sites:
+    - name: local
+      pfn: /bin/cp
+      type: installed
+  containers:
+  - name: federated_learning_container
+    type: singularity
+    image: /home/poseidon/workflows/FL-workflow/federated-learning-fedstack-PM/containers/fl.sif
+    image.site: local
+    profiles:
+      pegasus:
+        container.arguments: '--env ENABLE_MLFLOW=True --env MLFLOW_EXPERIMENT_NAME=federated-learning-example-tracker
+          --env MLFLOW_RUN=$PEGASUS_DAG_JOB_ID --env MLFLOW_TRACKING_URI=https://dagshub.com/swarmourr/FL-WF.mlflow
+          --env MLFLOW_TRACKING_USERNAME=swarmourr --env MLFLOW_TRACKING_PASSWORD=8e68cdbad7d3e90f137cf248e4d3d29c2c790622
+          --env MLFLOW_CONFIG=auto --env FILE_TYPE=None '
+jobs:
+- type: job
+  name: init_env
+  id: prepare_input_files
+  nodeLabel: prepare_input_files
+  arguments:
+  - -f source_data -size 10000 -n global_model_round_init.h5 -s 784 -c 10
+  uses:
+  - lfn: clusters.json
+    type: output
+    stageOut: true
+    registerReplica: false
+  - lfn: worker-2.novalocal_data.csv
+    metadata:
+      mlflow: auto
+    type: output
+    stageOut: true
+    registerReplica: false
+  - lfn: worker-3.novalocal_data.csv
+    metadata:
+      mlflow: auto
+    type: output
+    stageOut: true
+    registerReplica: false
+  - lfn: source_data
+    metadata:
+      mlflow: auto
+    type: input
+  - lfn: worker-1.novalocal_data.csv
+    metadata:
+      mlflow: auto
+    type: output
+    stageOut: true
+    registerReplica: false
+  - lfn: ref_dist.npy
+    metadata:
+      mlflow: auto
+    type: output
+    stageOut: true
+    registerReplica: false
+  profiles:
+    env:
+      MLFLOW_RUN_ID: 406a03744ab94002bb1b5b48d5bcb388
+    pegasus:
+      label: prepare_input_files
+- type: job
+  name: local_clustering
+  id: local_clustering_worker-1.novalocal
+  nodeLabel: local_clustering_worker-1.novalocal
+  arguments:
+  - -f worker-1.novalocal_data.csv -dist ref_dist.npy -node worker-1.novalocal
+  uses:
+  - lfn: worker-1.novalocal_data.csv
+    metadata:
+      mlflow: auto
+    type: input
+  - lfn: ref_dist.npy
+    metadata:
+      mlflow: auto
+    type: input
+  - lfn: worker-1.novalocal_clusters.csv
+    metadata:
+      mlflow: auto
+    type: output
+    stageOut: true
+    registerReplica: false
+  profiles:
+    env:
+      MLFLOW_RUN_ID: 9b1fa3a224934f4dada91005cbe21f4f
+    pegasus:
+      label: local_clustering_worker-1.novalocal
+- type: job
+  name: local_clustering
+  id: local_clustering_worker-2.novalocal
+  nodeLabel: local_clustering_worker-2.novalocal
+  arguments:
+  - -f worker-2.novalocal_data.csv -dist ref_dist.npy -node worker-2.novalocal
+  uses:
+  - lfn: worker-2.novalocal_clusters.csv
+    metadata:
+      mlflow: auto
+    type: output
+    stageOut: true
+    registerReplica: false
+  - lfn: ref_dist.npy
+    metadata:
+      mlflow: auto
+    type: input
+  - lfn: worker-2.novalocal_data.csv
+    metadata:
+      mlflow: auto
+    type: input
+  profiles:
+    env:
+      MLFLOW_RUN_ID: 8a73d3411a27422aa2a79ff06c348408
+    pegasus:
+      label: local_clustering_worker-2.novalocal
+- type: job
+  name: data_tracker
+  id: tracker_data_job_prepare_input_files_input
+  nodeLabel: tracker_data_job_prepare_input_files_input
+  arguments:
+  - -files source_data -data_dir pegasus-data -metadata_format yaml -o pegasus-data/metadata_prepare_input_files_input
+    -file_type inputs -pfn /home/poseidon/workflows/FL-workflow/federated-learning-fedstack-PM/data/oneyeardata.csv
+    -gdrive -remote_id 1KLUNrJNfCDI8Y5iXBmASUbtwqCpaHg3L -gcredentials cred
+  uses:
+  - lfn: pegasus-data/metadata_prepare_input_files_input.yaml
+    type: output
+    stageOut: true
+    registerReplica: true
+  - lfn: cred
+    type: input
+  - lfn: source_data
+    type: input
+  profiles:
+    env:
+      MLFLOW_RUN_ID: 406a03744ab94002bb1b5b48d5bcb388
+    pegasus:
+      label: prepare_input_files
+- type: job
+  name: data_tracker
+  id: tracker_data_job_prepare_input_files_output
+  nodeLabel: tracker_data_job_prepare_input_files_output
+  arguments:
+  - -files clusters.json worker-2.novalocal_data.csv worker-3.novalocal_data.csv worker-1.novalocal_data.csv
+    ref_dist.npy -data_dir pegasus-data -metadata_format yaml -o pegasus-data/metadata_prepare_input_files_output
+    -file_type outputs -pfn /home/poseidon/pegasus-integration/pegasus/packages/pegasus-api/test/workflow-example/clusters.json
+    /home/poseidon/pegasus-integration/pegasus/packages/pegasus-api/test/workflow-example/worker-2.novalocal_data.csv
+    /home/poseidon/pegasus-integration/pegasus/packages/pegasus-api/test/workflow-example/worker-3.novalocal_data.csv
+    /home/poseidon/pegasus-integration/pegasus/packages/pegasus-api/test/workflow-example/worker-1.novalocal_data.csv
+    /home/poseidon/pegasus-integration/pegasus/packages/pegasus-api/test/workflow-example/ref_dist.npy
+    -gdrive -remote_id 1KLUNrJNfCDI8Y5iXBmASUbtwqCpaHg3L -gcredentials cred
+  uses:
+  - lfn: pegasus-data/metadata_prepare_input_files_output.yaml
+    type: output
+    stageOut: true
+    registerReplica: true
+  - lfn: clusters.json
+    type: input
+  - lfn: worker-2.novalocal_data.csv
+    type: input
+  - lfn: worker-3.novalocal_data.csv
+    type: input
+  - lfn: worker-1.novalocal_data.csv
+    type: input
+  - lfn: ref_dist.npy
+    type: input
+  - lfn: cred
+    type: input
+  profiles:
+    env:
+      MLFLOW_RUN_ID: 406a03744ab94002bb1b5b48d5bcb388
+    pegasus:
+      label: prepare_input_files
+- type: job
+  name: global_clustering
+  id: global_clustering
+  nodeLabel: global_clustering
+  arguments:
+  - -f worker-1.novalocal_clusters.csv worker-2.novalocal_clusters.csv worker-3.novalocal_clusters.csv
+  uses:
+  - lfn: worker-2.novalocal_clusters.csv
+    metadata:
+      mlflow: auto
+    type: input
+  - lfn: global_clustering_results.csv
+    metadata:
+      mlflow: auto
+    type: output
+    stageOut: true
+    registerReplica: false
+  - lfn: worker-1.novalocal_clusters.csv
+    metadata:
+      mlflow: auto
+    type: input
+  - lfn: worker-3.novalocal_clusters.csv
+    metadata:
+      mlflow: auto
+    type: input
+  profiles:
+    env:
+      MLFLOW_RUN_ID: 480e6dd68f464fa58bc296ac39f76b2d
+    pegasus:
+      label: global_clustering
+- type: job
+  name: local_clustering
+  id: local_clustering_worker-3.novalocal
+  nodeLabel: local_clustering_worker-3.novalocal
+  arguments:
+  - -f worker-3.novalocal_data.csv -dist ref_dist.npy -node worker-3.novalocal
+  uses:
+  - lfn: worker-3.novalocal_data.csv
+    metadata:
+      mlflow: auto
+    type: input
+  - lfn: worker-3.novalocal_clusters.csv
+    metadata:
+      mlflow: auto
+    type: output
+    stageOut: true
+    registerReplica: false
+  - lfn: ref_dist.npy
+    metadata:
+      mlflow: auto
+    type: input
+  profiles:
+    env:
+      MLFLOW_RUN_ID: 91d6f0402f644505964179f5a6a854d0
+    pegasus:
+      label: local_clustering_worker-3.novalocal
+- type: job
+  name: data_tracker
+  id: tracker_data_job_local_clustering_worker-1.novalocal_output
+  nodeLabel: tracker_data_job_local_clustering_worker-1.novalocal_output
+  arguments:
+  - -files worker-1.novalocal_clusters.csv -data_dir pegasus-data -metadata_format
+    yaml -o pegasus-data/metadata_local_clustering_worker-1.novalocal_output -file_type
+    outputs -pfn /home/poseidon/pegasus-integration/pegasus/packages/pegasus-api/test/workflow-example/worker-1.novalocal_clusters.csv
+    -gdrive -remote_id 1KLUNrJNfCDI8Y5iXBmASUbtwqCpaHg3L -gcredentials cred
+  uses:
+  - lfn: worker-1.novalocal_clusters.csv
+    type: input
+  - lfn: pegasus-data/metadata_local_clustering_worker-1.novalocal_output.yaml
+    type: output
+    stageOut: true
+    registerReplica: true
+  - lfn: cred
+    type: input
+  profiles:
+    env:
+      MLFLOW_RUN_ID: 9b1fa3a224934f4dada91005cbe21f4f
+    pegasus:
+      label: local_clustering_worker-1.novalocal
+- type: job
+  name: data_tracker
+  id: tracker_data_job_local_clustering_worker-2.novalocal_output
+  nodeLabel: tracker_data_job_local_clustering_worker-2.novalocal_output
+  arguments:
+  - -files worker-2.novalocal_clusters.csv -data_dir pegasus-data -metadata_format
+    yaml -o pegasus-data/metadata_local_clustering_worker-2.novalocal_output -file_type
+    outputs -pfn /home/poseidon/pegasus-integration/pegasus/packages/pegasus-api/test/workflow-example/worker-2.novalocal_clusters.csv
+    -gdrive -remote_id 1KLUNrJNfCDI8Y5iXBmASUbtwqCpaHg3L -gcredentials cred
+  uses:
+  - lfn: worker-2.novalocal_clusters.csv
+    type: input
+  - lfn: cred
+    type: input
+  - lfn: pegasus-data/metadata_local_clustering_worker-2.novalocal_output.yaml
+    type: output
+    stageOut: true
+    registerReplica: true
+  profiles:
+    env:
+      MLFLOW_RUN_ID: 8a73d3411a27422aa2a79ff06c348408
+    pegasus:
+      label: local_clustering_worker-2.novalocal
+- type: job
+  name: data_tracker
+  id: tracker_data_job_local_clustering_worker-3.novalocal_output
+  nodeLabel: tracker_data_job_local_clustering_worker-3.novalocal_output
+  arguments:
+  - -files worker-3.novalocal_clusters.csv -data_dir pegasus-data -metadata_format
+    yaml -o pegasus-data/metadata_local_clustering_worker-3.novalocal_output -file_type
+    outputs -pfn /home/poseidon/pegasus-integration/pegasus/packages/pegasus-api/test/workflow-example/worker-3.novalocal_clusters.csv
+    -gdrive -remote_id 1KLUNrJNfCDI8Y5iXBmASUbtwqCpaHg3L -gcredentials cred
+  uses:
+  - lfn: cred
+    type: input
+  - lfn: worker-3.novalocal_clusters.csv
+    type: input
+  - lfn: pegasus-data/metadata_local_clustering_worker-3.novalocal_output.yaml
+    type: output
+    stageOut: true
+    registerReplica: true
+  profiles:
+    env:
+      MLFLOW_RUN_ID: 91d6f0402f644505964179f5a6a854d0
+    pegasus:
+      label: local_clustering_worker-3.novalocal
+- type: job
+  name: data_tracker
+  id: tracker_data_job_global_clustering_output
+  nodeLabel: tracker_data_job_global_clustering_output
+  arguments:
+  - -files global_clustering_results.csv -data_dir pegasus-data -metadata_format yaml
+    -o pegasus-data/metadata_global_clustering_output -file_type outputs -pfn /home/poseidon/pegasus-integration/pegasus/packages/pegasus-api/test/workflow-example/global_clustering_results.csv
+    -gdrive -remote_id 1KLUNrJNfCDI8Y5iXBmASUbtwqCpaHg3L -gcredentials cred
+  uses:
+  - lfn: pegasus-data/metadata_global_clustering_output.yaml
+    type: output
+    stageOut: true
+    registerReplica: true
+  - lfn: global_clustering_results.csv
+    type: input
+  - lfn: cred
+    type: input
+  profiles:
+    env:
+      MLFLOW_RUN_ID: 480e6dd68f464fa58bc296ac39f76b2d
+    pegasus:
+      label: global_clustering
+- type: job
+  name: data_tracker
+  id: tracker_wf_federated-learning-example-tracker
+  nodeLabel: tracker_wf_federated-learning-example-tracker
+  arguments:
+  - -files wf -data_dir pegasus-data -metadata_format yaml -o pegasus-data/metadata_wf
+    -file_type workflow -pfn /home/poseidon/pegasus-integration/pegasus/packages/pegasus-api/test/workflow-example/workflow.yml
+    -gdrive -remote_id 1KLUNrJNfCDI8Y5iXBmASUbtwqCpaHg3L -gcredentials cred
+  uses:
+  - lfn: cred
+    type: input
+  - lfn: wf
+    type: input
+  - lfn: pegasus-data/metadata_wf.yaml
+    type: output
+    stageOut: true
+    registerReplica: true
+  profiles:
+    env:
+      ENABLE_MLFLOW: 'False'
+- type: job
+  name: version_transformations
+  id: transformation_versioning_job
+  nodeLabel: transformation_versioning_job
+  arguments:
+  - -files init_env local_clustering global_clustering -names init_env local_clustering
+    global_clustering -path /home/poseidon/workflows/FL-workflow/federated-learning-fedstack-PM/bin/init_env.py
+    /home/poseidon/workflows/FL-workflow/federated-learning-fedstack-PM/bin/localClustering.py
+    /home/poseidon/workflows/FL-workflow/federated-learning-fedstack-PM/bin/globalClustering.py
+    --use-git -token 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 -owner swarmourr -repo
+    autopush -branch main
+  uses:
+  - lfn: pegasus-data/metadata_transformations.yaml
+    type: output
+    stageOut: true
+    registerReplica: true
+  - lfn: local_clustering
+    type: input
+  - lfn: global_clustering
+    type: input
+  - lfn: init_env
+    type: input
+- type: job
+  name: combiner
+  id: metadata_combiner
+  nodeLabel: metadata_combiner
+  arguments:
+  - -files pegasus-data/metadata_prepare_input_files_input.yaml pegasus-data/metadata_prepare_input_files_output.yaml
+    pegasus-data/metadata_local_clustering_worker-1.novalocal_output.yaml pegasus-data/metadata_local_clustering_worker-2.novalocal_output.yaml
+    pegasus-data/metadata_local_clustering_worker-3.novalocal_output.yaml pegasus-data/metadata_global_clustering_output.yaml
+    pegasus-data/metadata_wf.yaml pegasus-data/metadata_transformations.yaml -output_file_name
+    metadata -file_type yaml --use-git -token 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
+    -owner swarmourr -repo autopush -branch main -pull
+  uses:
+  - lfn: pegasus-data/metadata_local_clustering_worker-2.novalocal_output.yaml
+    type: input
+  - lfn: pegasus-data/metadata_prepare_input_files_output.yaml
+    type: input
+  - lfn: pegasus-data/metadata_local_clustering_worker-3.novalocal_output.yaml
+    type: input
+  - lfn: pegasus-data/metadata_local_clustering_worker-1.novalocal_output.yaml
+    type: input
+  - lfn: pegasus-data/metadata_global_clustering_output.yaml
+    type: input
+  - lfn: pegasus-data/metadata_transformations.yaml
+    type: input
+  - lfn: metadata
+    type: input
+  - lfn: pegasus-data/metadata_wf.yaml
+    type: input
+  - lfn: metadata.yaml
+    type: output
+    stageOut: true
+    registerReplica: false
+  - lfn: pegasus-data/metadata_prepare_input_files_input.yaml
+    type: input
+- type: job
+  name: cp
+  id: copy_file
+  nodeLabel: copy_file
+  arguments:
+  - metadata.yaml
+  - /home/poseidon/.pegasus/
+  uses:
+  - lfn: metadata.yaml
+    type: input
+  profiles:
+    selector:
+      execution.site: local
+jobDependencies:
+- id: prepare_input_files
+  children:
+  - tracker_data_job_prepare_input_files_output
+  - local_clustering_worker-1.novalocal
+  - tracker_data_job_prepare_input_files_input
+  - local_clustering_worker-3.novalocal
+  - local_clustering_worker-2.novalocal
+- id: local_clustering_worker-1.novalocal
+  children:
+  - global_clustering
+  - tracker_data_job_local_clustering_worker-1.novalocal_output
+- id: local_clustering_worker-2.novalocal
+  children:
+  - tracker_data_job_local_clustering_worker-2.novalocal_output
+  - global_clustering
+- id: local_clustering_worker-3.novalocal
+  children:
+  - global_clustering
+  - tracker_data_job_local_clustering_worker-3.novalocal_output
+- id: global_clustering
+  children:
+  - tracker_data_job_global_clustering_output
+- id: tracker_data_job_prepare_input_files_input
+  children:
+  - metadata_combiner
+- id: tracker_data_job_prepare_input_files_output
+  children:
+  - metadata_combiner
+- id: tracker_data_job_local_clustering_worker-1.novalocal_output
+  children:
+  - metadata_combiner
+- id: tracker_data_job_local_clustering_worker-2.novalocal_output
+  children:
+  - metadata_combiner
+- id: tracker_data_job_local_clustering_worker-3.novalocal_output
+  children:
+  - metadata_combiner
+- id: tracker_data_job_global_clustering_output
+  children:
+  - metadata_combiner
+- id: tracker_wf_federated-learning-example-tracker
+  children:
+  - metadata_combiner
+- id: transformation_versioning_job
+  children:
+  - metadata_combiner
+- id: metadata_combiner
+  children:
+  - copy_file

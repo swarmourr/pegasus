@@ -31,7 +31,7 @@ class GenericFileDataset(Dataset):
     def _to_mlflow_entity(self):
          return DatasetEntity(
             name=self.file_path,
-            digest="jjdjebjkbzajknb",
+            digest="",
             source_type="local",
             source=self.file_path,
             schema=self.file_path,
@@ -59,8 +59,10 @@ class DataVersioning:
                 self.experiment=os.environ["MLFLOW_EXPERIMENT_NAME"]
                 self.run_name=os.environ["MLFLOW_RUN"]
                 self.run_id=os.environ["MLFLOW_RUN_ID"]
+            self.MLFLOW_URL=f'{os.environ["MLFLOW_TRACKING_URI"]}/#/experiments/{mlflow.get_experiment_by_name(self.experiment).experiment_id}/runs/{self.run_id}'
         else:
             self.enable_mlflow = False
+            self.MLFLOW_URL="This jobs is not tracked by MLFLOW"
             print("mlflow env variabe dont exist")
         
         self.base_directory = base_directory
@@ -158,6 +160,7 @@ class DataVersioning:
                                         "size": os.path.getsize(source_file),
                                         "last_modification": os.path.getmtime(source_file),
                                         "type": type,
+                                        "mlflow_url":self.MLFLOW_URL,
                                         "env": self.collect_env_info()
                                     }
                                 }
@@ -166,7 +169,6 @@ class DataVersioning:
                     print(f"Version for file '{source_file}' created successfully.")
                     if self.enable_mlflow:
                         with mlflow.start_run(experiment_id=self.experiment, run_id=self.run_id):
-                            print("hada mlflow file")
                             print(mlflow_file)
                             mlflow_file.update(self.collect_env_info())
                             try: 

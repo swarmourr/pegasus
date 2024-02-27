@@ -1,0 +1,8 @@
+# file-based replica catalog: 2024-02-20T14:02:09.352+00:00
+cred /home/poseidon/.pegasus/dvcproject-credentials.json priority="10" site="local"
+global_clustering /home/poseidon/workflows/FL-workflow/federated-learning-fedstack-PM/bin/globalClustering.py priority="10" site="local"
+metadata /home/poseidon/.pegasus/metadata.yaml priority="10" site="local"
+source_data /home/poseidon/workflows/FL-workflow/federated-learning-fedstack-PM/data/oneyeardata.csv priority="10" site="local"
+local_clustering /home/poseidon/workflows/FL-workflow/federated-learning-fedstack-PM/bin/localClustering.py priority="10" site="local"
+init_env /home/poseidon/workflows/FL-workflow/federated-learning-fedstack-PM/bin/init_env.py priority="10" site="local"
+wf /home/poseidon/pegasus-integration/pegasus/packages/pegasus-api/test/workflow-example/workflow.yml priority="10" site="local"

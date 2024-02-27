@@ -1,0 +1,45 @@
+######################################################################
+# PEGASUS WMS GENERATED SUBMIT FILE
+# DAG : federated-learning-example-tracker, Index = 0, Count = null
+# SUBMIT FILE NAME : version_transformations_transformation_versioning_job.sub
+######################################################################
+stream_error  = false
+stream_output = false
+environment = "LANG=en_US.UTF-8 CONDOR_JOBID=$(cluster).$(process) PEGASUS_WF_UUID=ed44760a-0e5b-4c2b-bf4f-378a72dbedc6 PEGASUS_WF_LABEL=federated-learning-example-tracker PEGASUS_DAG_JOB_ID=version_transformations_transformation_versioning_job PEGASUS_SITE=condorpool"
++WantIOProxy = True
+error = /home/poseidon/pegasus-integration/pegasus/packages/pegasus-api/test/workflow-example/poseidon/pegasus/federated-learning-example-tracker/run0005//00/00/version_transformations_transformation_versioning_job.err
+executable = /home/poseidon/pegasus-integration/pegasus/packages/pegasus-api/test/workflow-example/poseidon/pegasus/federated-learning-example-tracker/run0005/00/00/version_transformations_transformation_versioning_job.sh
+initialdir = /home/poseidon/workflows/FL-workflow/federated-learning-fedstack-PM/scratch/poseidon/pegasus/federated-learning-example-tracker/run0005
+log = /home/poseidon/pegasus-integration/pegasus/packages/pegasus-api/test/workflow-example/poseidon/pegasus/federated-learning-example-tracker/run0005/federated-learning-example-tracker-0.log
+notification = NEVER
+output = /home/poseidon/pegasus-integration/pegasus/packages/pegasus-api/test/workflow-example/poseidon/pegasus/federated-learning-example-tracker/run0005//00/00/version_transformations_transformation_versioning_job.out
+periodic_release = False
+periodic_remove = (JobStatus == 5) && ((CurrentTime - EnteredCurrentStatus) > 1800)
+priority = 20
+should_transfer_files = YES
+submit_event_user_notes = pool:condorpool
+transfer_executable = true
+transfer_input_files = global_clustering,local_clustering,init_env,version_transformations,federated_learning_container.sif,/home/poseidon/pegasus-integration/pegasus/packages/pegasus-api/test/workflow-example/poseidon/pegasus/federated-learning-example-tracker/run0005/pegasus-worker-5.0.6-x86_64_ubuntu_20.tar.gz,/home/poseidon/pegasus-integration/pegasus/packages/pegasus-api/test/workflow-example/poseidon/pegasus/federated-learning-example-tracker/run0005/pegasus-lite-common.sh
+transfer_output_files = pegasus-data/metadata_transformations.yaml
+transfer_output_remaps = "metadata_transformations.yaml=pegasus-data/metadata_transformations.yaml"
+universe = vanilla
+when_to_transfer_output = ON_EXIT
++pegasus_generator = "Pegasus"
++pegasus_root_wf_uuid = "ed44760a-0e5b-4c2b-bf4f-378a72dbedc6"
++pegasus_wf_uuid = "ed44760a-0e5b-4c2b-bf4f-378a72dbedc6"
++pegasus_version = "5.0.6"
++pegasus_wf_name = "federated-learning-example-tracker-0"
++pegasus_wf_time = "20240220T191233+0000"
++pegasus_wf_xformation = "version_transformations"
++pegasus_wf_dax_job_id = "transformation_versioning_job"
++pegasus_wf_dag_job_id = "version_transformations_transformation_versioning_job"
++pegasus_job_class = 1
++pegasus_site = "condorpool"
++pegasus_job_runtime = 0
++pegasus_cores = 1
++pegasus_gpus = 1
++pegasus_cluster_size = 1
+queue
+######################################################################
+# END OF SUBMIT FILE
+######################################################################

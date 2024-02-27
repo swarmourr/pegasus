@@ -1,0 +1,12 @@
+[
+ { "type": "transfer",
+   "linkage": "output",
+   "lfn": "metadata.yaml",
+   "id": 1,
+   "src_urls": [
+     { "site_label": "local", "url": "file:///home/poseidon/workflows/FL-workflow/federated-learning-fedstack-PM/scratch/poseidon/pegasus/federated-learning-example-tracker/run0002/./metadata.yaml" }
+   ],
+   "dest_urls": [
+     { "site_label": "local", "url": "file:///home/poseidon/workflows/FL-workflow/federated-learning-fedstack-PM/output/metadata.yaml" }
+   ] }
+]

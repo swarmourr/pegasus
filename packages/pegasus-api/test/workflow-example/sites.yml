@@ -1,0 +1,38 @@
+x-pegasus:
+  apiLang: python
+  createdBy: poseidon
+  createdOn: 02-21-24T12:51:33Z
+pegasus: 5.0.4
+sites:
+- name: local
+  directories:
+  - type: sharedScratch
+    path: /home/poseidon/pegasus-integration/pegasus/packages/pegasus-api/test/workflow-example/scratch
+    sharedFileSystem: false
+    fileServers:
+    - url: file:///home/poseidon/pegasus-integration/pegasus/packages/pegasus-api/test/workflow-example/scratch
+      operation: all
+  - type: localStorage
+    path: /home/poseidon/pegasus-integration/pegasus/packages/pegasus-api/test/workflow-example/output
+    sharedFileSystem: false
+    fileServers:
+    - url: file:///home/poseidon/pegasus-integration/pegasus/packages/pegasus-api/test/workflow-example/output
+      operation: all
+- name: condorpool
+  directories:
+  - type: sharedScratch
+    path: /home/poseidon/pegasus-integration/pegasus/packages/pegasus-api/test/workflow-example/scratch
+    sharedFileSystem: false
+    fileServers:
+    - url: scp://poseidon@federated-learning-submit/home/poseidon/pegasus-integration/pegasus/packages/pegasus-api/test/workflow-example/scratch
+      operation: all
+  profiles:
+    condor:
+      universe: vanilla
+      request_memory: 2048
+    pegasus:
+      style: condor
+      memory: 2048
+      data.configuration: nonsharedfs
+      SSH_PRIVATE_KEY: /home/poseidon/.ssh/cluster_key
+      auxillary.local: 'True'

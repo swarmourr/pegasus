@@ -1,0 +1,179 @@
+- invocation: True
+  version: 3.0
+  start: 2024-02-20T19:12:44.287+00:00
+  duration: 2.253
+  transformation: "pegasus::dirmanager"
+  derivation: "null"
+  resource: "local"
+  wf-label: "federated-learning-example-tracker"
+  wf-stamp: "2024-02-20T19:12:32+00:00"
+  interface: ens3
+  hostaddr: 192.168.100.110
+  hostname: host-192-168-100-110.openstacklocal
+  pid: 591105
+  uid: 1011
+  user: poseidon
+  gid: 1012
+  group: poseidon
+  umask: 0o0022
+  mainjob:
+    start: 2024-02-20T19:12:44.328+00:00
+    duration: 2.212
+    pid: 591106
+    usage:
+      utime: 0.135
+      stime: 0.082
+      maxrss: 20052
+      minflt: 10739
+      majflt: 0
+      nswap: 0
+      inblock: 0
+      outblock: 16
+      msgsnd: 0
+      msgrcv: 0
+      nsignals: 0
+      nvcsw: 58
+      nivcsw: 4
+    status:
+      raw: 0
+      regular_exitcode: 0
+    executable:
+      file_name: /usr/bin/pegasus-transfer
+      mode: 0o100755
+      size: 2990
+      inode: 525377
+      nlink: 1
+      blksize: 4096
+      blocks: 8
+      mtime: 2023-06-30T20:32:25+00:00
+      atime: 2024-02-20T13:48:56+00:00
+      ctime: 2023-07-31T23:43:55+00:00
+      uid: 0
+      user: root
+      gid: 0
+      group: root
+    argument_vector:
+    procs:
+  jobids:
+    condor: 33077.0
+  cwd: /var/spool/condor/local_univ_execute/dir_591102
+  usage:
+    utime: 0.000
+    stime: 0.043
+    maxrss: 2568
+    minflt: 144
+    majflt: 1
+    nswap: 0
+    inblock: 24
+    outblock: 0
+    msgsnd: 0
+    msgrcv: 0
+    nsignals: 0
+    nvcsw: 2
+    nivcsw: 0
+  machine:
+    page-size: 4096
+    uname_system: linux
+    uname_nodename: submit
+    uname_release: 5.4.0-155-generic
+    uname_machine: x86_64
+    ram_total: 16380196
+    ram_free: 358332
+    ram_shared: 3148
+    ram_buffer: 317760
+    swap_total: 0
+    swap_free: 0
+    cpu_count: 8
+    cpu_speed: 2300
+    cpu_vendor: GenuineIntel
+    cpu_model: Intel Core Processor (Haswell, no TSX, IBRS)
+    load_min1: 0.41
+    load_min5: 0.21
+    load_min15: 0.13
+    procs_total: 267
+    procs_running: 1
+    procs_sleeping: 189
+    procs_other: 77
+    procs_vmsize: 43254436
+    procs_rss: 3741388
+    task_total: 568
+    task_running: 1
+    task_sleeping: 490
+    task_other: 77
+  files:
+    stdin:
+      descriptor_number: 0
+      mode: 0o10600
+      size: 0
+      inode: 108288768
+      nlink: 1
+      blksize: 4096
+      blocks: 0
+      mtime: 2024-02-20T19:12:44+00:00
+      atime: 2024-02-20T19:12:44+00:00
+      ctime: 2024-02-20T19:12:44+00:00
+      uid: 1011
+      user: poseidon
+      gid: 1012
+      group: poseidon
+    stdout:
+      temporary_name: /var/spool/condor/local_univ_execute/dir_591102/ks.out.LxYP3N
+      descriptor: 3
+      mode: 0o100600
+      size: 1237
+      inode: 2673352
+      nlink: 1
+      blksize: 4096
+      blocks: 8
+      mtime: 2024-02-20T19:12:46+00:00
+      atime: 2024-02-20T19:12:44+00:00
+      ctime: 2024-02-20T19:12:46+00:00
+      uid: 1011
+      user: poseidon
+      gid: 1012
+      group: poseidon
+      data_truncated: false
+      data: |
+        2024-02-20 19:12:44,472    INFO:  Reading URL pairs from stdin
+        2024-02-20 19:12:44,473    INFO:  1 transfers loaded
+        2024-02-20 19:12:44,473    INFO:  PATH=/usr/bin:/home/poseidon-data/workflows/FL-workflow/FlVenv/bin:/usr/local/go/bin:/home/poseidon/.vscode-server/bin/903b1e9d8990623e3d7da1df3d33db3e42d80eda/bin/remote-cli:/home/poseidon/.local/bin:/usr/local/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/poseidon/go/bin:/home/poseidon/go/bin:/bin:/usr/bin:/usr/local/bin:/opt/local/bin
+        2024-02-20 19:12:44,473    INFO:  LD_LIBRARY_PATH=
+        2024-02-20 19:12:44,500    INFO:  --------------------------------------------------------------------------------
+        2024-02-20 19:12:44,500    INFO:  Starting transfers - attempt 1
+        2024-02-20 19:12:46,503    INFO:  /bin/mkdir -p '/home/poseidon/workflows/FL-workflow/federated-learning-fedstack-PM/scratch/poseidon/pegasus/federated-learning-example-tracker/run0005' 
+        2024-02-20 19:12:46,517    INFO:  --------------------------------------------------------------------------------
+        2024-02-20 19:12:46,517    INFO:  Stats: no local files in the transfer set
+        2024-02-20 19:12:46,517    INFO:  All transfers completed successfully.
+        
+    stderr:
+      temporary_name: /var/spool/condor/local_univ_execute/dir_591102/ks.err.bMclvM
+      descriptor: 4
+      mode: 0o100600
+      size: 0
+      inode: 2673353
+      nlink: 1
+      blksize: 4096
+      blocks: 0
+      mtime: 2024-02-20T19:12:44+00:00
+      atime: 2024-02-20T19:12:44+00:00
+      ctime: 2024-02-20T19:12:44+00:00
+      uid: 1011
+      user: poseidon
+      gid: 1012
+      group: poseidon
+    metadata:
+      temporary_name: /var/spool/condor/local_univ_execute/dir_591102/ks.meta.SeI6aP
+      descriptor: 5
+      mode: 0o100600
+      size: 0
+      inode: 2673354
+      nlink: 1
+      blksize: 4096
+      blocks: 0
+      mtime: 2024-02-20T19:12:44+00:00
+      atime: 2024-02-20T19:12:44+00:00
+      ctime: 2024-02-20T19:12:44+00:00
+      uid: 1011
+      user: poseidon
+      gid: 1012
+      group: poseidon

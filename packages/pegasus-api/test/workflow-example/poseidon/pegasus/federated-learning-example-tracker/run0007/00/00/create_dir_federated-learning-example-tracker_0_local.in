@@ -1,0 +1,6 @@
+[
+  {
+    "id": 1,
+    "type": "mkdir",
+    "target": { "site_label": "local", "url": "file:///home/poseidon/workflows/FL-workflow/federated-learning-fedstack-PM/scratch/poseidon/pegasus/federated-learning-example-tracker/run0007" } }
+]

@@ -1,0 +1,65 @@
+[
+ { "type": "transfer",
+   "linkage": "output",
+   "lfn": "worker-3.novalocal_clusters.csv",
+   "id": 1,
+   "attributes": {
+     "mlflow":"auto"
+   },
+   "src_urls": [
+     { "site_label": "local", "url": "file:///home/poseidon/workflows/FL-workflow/federated-learning-fedstack-PM/scratch/poseidon/pegasus/federated-learning-example-tracker/run0007/./worker-3.novalocal_clusters.csv" }
+   ],
+   "dest_urls": [
+     { "site_label": "local", "url": "file:///home/poseidon/workflows/FL-workflow/federated-learning-fedstack-PM/output/worker-3.novalocal_clusters.csv" }
+   ] }
+ ,
+ { "type": "transfer",
+   "linkage": "output",
+   "lfn": "worker-2.novalocal_clusters.csv",
+   "id": 2,
+   "attributes": {
+     "mlflow":"auto"
+   },
+   "src_urls": [
+     { "site_label": "local", "url": "file:///home/poseidon/workflows/FL-workflow/federated-learning-fedstack-PM/scratch/poseidon/pegasus/federated-learning-example-tracker/run0007/./worker-2.novalocal_clusters.csv" }
+   ],
+   "dest_urls": [
+     { "site_label": "local", "url": "file:///home/poseidon/workflows/FL-workflow/federated-learning-fedstack-PM/output/worker-2.novalocal_clusters.csv" }
+   ] }
+ ,
+ { "type": "transfer",
+   "linkage": "output",
+   "lfn": "pegasus-data/metadata_prepare_input_files_input.yaml",
+   "id": 3,
+   "src_urls": [
+     { "site_label": "local", "url": "file:///home/poseidon/workflows/FL-workflow/federated-learning-fedstack-PM/scratch/poseidon/pegasus/federated-learning-example-tracker/run0007/./pegasus-data/metadata_prepare_input_files_input.yaml" }
+   ],
+   "dest_urls": [
+     { "site_label": "local", "url": "file:///home/poseidon/workflows/FL-workflow/federated-learning-fedstack-PM/output/pegasus-data/metadata_prepare_input_files_input.yaml" }
+   ] }
+ ,
+ { "type": "transfer",
+   "linkage": "output",
+   "lfn": "pegasus-data/metadata_prepare_input_files_output.yaml",
+   "id": 4,
+   "src_urls": [
+     { "site_label": "local", "url": "file:///home/poseidon/workflows/FL-workflow/federated-learning-fedstack-PM/scratch/poseidon/pegasus/federated-learning-example-tracker/run0007/./pegasus-data/metadata_prepare_input_files_output.yaml" }
+   ],
+   "dest_urls": [
+     { "site_label": "local", "url": "file:///home/poseidon/workflows/FL-workflow/federated-learning-fedstack-PM/output/pegasus-data/metadata_prepare_input_files_output.yaml" }
+   ] }
+ ,
+ { "type": "transfer",
+   "linkage": "output",
+   "lfn": "worker-1.novalocal_clusters.csv",
+   "id": 5,
+   "attributes": {
+     "mlflow":"auto"
+   },
+   "src_urls": [
+     { "site_label": "local", "url": "file:///home/poseidon/workflows/FL-workflow/federated-learning-fedstack-PM/scratch/poseidon/pegasus/federated-learning-example-tracker/run0007/./worker-1.novalocal_clusters.csv" }
+   ],
+   "dest_urls": [
+     { "site_label": "local", "url": "file:///home/poseidon/workflows/FL-workflow/federated-learning-fedstack-PM/output/worker-1.novalocal_clusters.csv" }
+   ] }
+]

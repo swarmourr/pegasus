@@ -1,0 +1,22 @@
+x-pegasus:
+  apiLang: python
+  createdBy: poseidon
+  createdOn: 02-21-24T12:51:33Z
+pegasus: 5.0.4
+replicas:
+- lfn: train-images-idx3-ubyte
+  pfns:
+  - site: local
+    pfn: scp://poseidon@federated-learning-submit//home/poseidon/pegasus-integration/pegasus/packages/pegasus-api/test/workflow-example/mnist/train-images-idx3-ubyte
+- lfn: train-labels-idx1-ubyte
+  pfns:
+  - site: local
+    pfn: scp://poseidon@federated-learning-submit//home/poseidon/pegasus-integration/pegasus/packages/pegasus-api/test/workflow-example/mnist/train-labels-idx1-ubyte
+- lfn: t10k-images-idx3-ubyte
+  pfns:
+  - site: local
+    pfn: scp://poseidon@federated-learning-submit//home/poseidon/pegasus-integration/pegasus/packages/pegasus-api/test/workflow-example/mnist/t10k-images-idx3-ubyte
+- lfn: t10k-labels-idx1-ubyte
+  pfns:
+  - site: local
+    pfn: scp://poseidon@federated-learning-submit//home/poseidon/pegasus-integration/pegasus/packages/pegasus-api/test/workflow-example/mnist/t10k-labels-idx1-ubyte

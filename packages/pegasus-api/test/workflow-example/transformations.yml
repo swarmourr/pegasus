@@ -1,0 +1,51 @@
+x-pegasus:
+  apiLang: python
+  createdBy: poseidon
+  createdOn: 02-21-24T12:51:33Z
+pegasus: 5.0.4
+transformations:
+- name: init_model
+  sites:
+  - name: condorpool
+    pfn: scp://poseidon@federated-learning-submit//home/poseidon/pegasus-integration/pegasus/packages/pegasus-api/test/workflow-example/bin/init_model.py
+    type: stageable
+    container: federated_learning_container
+  metadata:
+    track_Trans: 'True'
+- name: local_model
+  sites:
+  - name: condorpool
+    pfn: scp://poseidon@federated-learning-submit//home/poseidon/pegasus-integration/pegasus/packages/pegasus-api/test/workflow-example/bin/local_model.py
+    type: stageable
+    container: federated_learning_container
+  metadata:
+    track_Trans: 'True'
+- name: global_model
+  sites:
+  - name: condorpool
+    pfn: scp://poseidon@federated-learning-submit//home/poseidon/pegasus-integration/pegasus/packages/pegasus-api/test/workflow-example/bin/global_model.py
+    type: stageable
+    container: federated_learning_container
+  metadata:
+    track_Trans: 'True'
+- name: evaluate_model
+  sites:
+  - name: condorpool
+    pfn: scp://poseidon@federated-learning-submit//home/poseidon/pegasus-integration/pegasus/packages/pegasus-api/test/workflow-example/bin/evaluate_model.py
+    type: stageable
+    container: federated_learning_container
+  metadata:
+    track_Trans: 'True'
+- name: perf_model
+  sites:
+  - name: condorpool
+    pfn: scp://poseidon@federated-learning-submit//home/poseidon/pegasus-integration/pegasus/packages/pegasus-api/test/workflow-example/bin/perf_model.py
+    type: stageable
+    container: federated_learning_container
+  metadata:
+    track_Trans: 'True'
+containers:
+- name: federated_learning_container
+  type: singularity
+  image: scp://poseidon@federated-learning-submit//home/poseidon/pegasus-integration/pegasus/packages/pegasus-api/test/workflow-example/containers/fl.sif
+  image.site: local

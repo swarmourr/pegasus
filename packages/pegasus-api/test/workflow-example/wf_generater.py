@@ -14,9 +14,6 @@ from argparse import ArgumentParser
 import numpy as np
 import pandas as pd
 
-
-
-
 import getpass
 import json
 import os
@@ -121,13 +118,12 @@ class FederatedLearningWorkflow():
         mkdir = Transformation("mkdir", site="local", pfn="/bin/mkdir", is_stageable=False)
         
         
-        init_env = Transformation("init_env", site=exec_site_name, pfn=os.path.join(self.wf_dir, "bin/init_env.py"), is_stageable=True, container=federated_learning_container)
-        local_clustering = Transformation("local_clustering", site=exec_site_name, pfn=os.path.join(self.wf_dir, "bin/localClustering.py"), is_stageable=True, container=federated_learning_container)
-        global_clustering = Transformation("global_clustering", site=exec_site_name, pfn=os.path.join(self.wf_dir, "bin/globalClustering.py"), is_stageable=True, container=federated_learning_container)
+        init_env = Transformation("init_env", site=exec_site_name, pfn=os.path.join(self.wf_dir, "bin/init_env.py"), is_stageable=True, container=federated_learning_container).add_metadata(track_Trans=True)
+        local_clustering = Transformation("local_clustering", site=exec_site_name, pfn=os.path.join(self.wf_dir, "bin/localClustering.py"), is_stageable=True, container=federated_learning_container).add_metadata(track_Trans=True)
+        global_clustering = Transformation("global_clustering", site=exec_site_name, pfn=os.path.join(self.wf_dir, "bin/globalClustering.py"), is_stageable=True, container=federated_learning_container).add_metadata(track_Trans=True)
 
         self.tc.add_containers(federated_learning_container)
         self.tc.add_transformations(init_env,local_clustering,global_clustering)
-
         return
 
     # --- Replica Catalog ----------------------------------------------------------
@@ -172,10 +168,7 @@ class FederatedLearningWorkflow():
         self.wf.add_jobs(global_clustering_job)
         return self.wf 
     
-
-
-               
-            
+         
     # --- Run Workflow ----------------------------------------------------------
     
     def run_workflow(self,execution_site_name, skip_sites_catalog,clients, number_of_selected_clients, number_of_rounds,initiation, model_path, round):
@@ -203,8 +196,7 @@ class FederatedLearningWorkflow():
         self.create_workflow(clients, number_of_selected_clients, number_of_rounds,model_path,initiation,round)
         
         print("Creating tracking informations")
-        #tracker=PegasusTracker(local_storage_dir=self.local_data_dir,wf_dir=self.wf_dir,wf=self.wf,rc=self.rc,tc=self.tc,sc=self.sc,dagfile=self.dagfile,config_file="/home/poseidon/workflows/FL-workflow/federated-learning-fedstack-PM/Versionning/pegasus-data.config")
-        #tracker.full_tracker()
+        
         
         
         self.write()
@@ -233,7 +225,9 @@ if __name__ == '__main__':
     
     workflow = FederatedLearningWorkflow(dagfile=args.output)
     workflow.run_workflow(args.execution_site_name, args.skip_sites_catalog,args.clients, args.number_of_selected_clients, args.number_of_rounds, True, "",0)
-    
+   
+            
+
 
     #workflow.wf.plan(submit=True).wait()
     #workflow.wf.remove()

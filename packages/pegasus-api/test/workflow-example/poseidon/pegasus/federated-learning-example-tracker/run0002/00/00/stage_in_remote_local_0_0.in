@@ -1,0 +1,12 @@
+[
+ { "type": "transfer",
+   "linkage": "input",
+   "lfn": "federated_learning_container.sif",
+   "id": 1,
+   "src_urls": [
+     { "site_label": "local", "url": "file:///home/poseidon/workflows/FL-workflow/federated-learning-fedstack-PM/containers/fl.sif", "priority": 100 }
+   ],
+   "dest_urls": [
+     { "site_label": "local", "url": "file:///home/poseidon/workflows/FL-workflow/federated-learning-fedstack-PM/scratch/poseidon/pegasus/federated-learning-example-tracker/run0002/./federated_learning_container.sif", "type": "singularity" }
+   ] }
+]

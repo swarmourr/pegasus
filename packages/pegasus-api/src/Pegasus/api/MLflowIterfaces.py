@@ -1,5 +1,7 @@
 import os
 import mlflow
+from mlflow.utils.mlflow_tags import MLFLOW_PARENT_RUN_ID
+
 
 class MLflowManager:
     def __init__(self, tracking_uri, auth_type=None, **kwargs):
@@ -43,12 +45,15 @@ class MLflowManager:
         else:
             raise ValueError(f"Experiment '{experiment_name}' does not exist.")
 
-    def create_run(self, experiment_name , run_name):
+    def create_run(self, experiment_name , run_name , tags=None):
         self._authenticate()
-        experiment_id = self.get_experiment_id(experiment_name)
-
-        with mlflow.start_run(experiment_id=experiment_id, run_name=run_name) as run:
-            return run.info.run_id
+        experiment_id = self.create_experiment(experiment_name)
+        if tags==None:
+            with mlflow.start_run(experiment_id=experiment_id, run_name=run_name) as run:
+                return run.info.run_id
+        else:
+            with mlflow.start_run(experiment_id=experiment_id, run_name=run_name,tags={MLFLOW_PARENT_RUN_ID: tags})as run:
+                return run.info.run_id
 
     def list_runs(self, experiment_name):
         self._authenticate()

@@ -19,7 +19,8 @@ from collections import OrderedDict
 import os
 
 from .MLflowIterfaces import MLflowManager
-
+from mlflow.utils.mlflow_tags import MLFLOW_PARENT_RUN_ID
+from datetime import datetime
 import configparser
 
 from Pegasus.client._client import from_env
@@ -53,6 +54,7 @@ class PegasusTracker():
         self.use_git=False
         self.pull=False
         self.config = configparser.ConfigParser()
+        self.PARENT_MLFLOW_ID=None
 
         try:
             self.config.read(DEFAULT_CONFIG_FILE)
@@ -118,24 +120,28 @@ class PegasusTracker():
         try:
             self.rc.add_replica("local", "metadata", self.config.get('metadata', 'path'))
             self.metadata_file=File("metadata")
+            self.metadata_combiner=True
             #self.rc.add_replica("local", "metadata","/home/poseidon/workflows/FL-workflow/federated-learning-fedstack-PM/output/metadata.yaml")
         except:
-            pass
+            self.metadata_combiner=False
     
         self.metadata_output_combiner=None
-        
-        self.container =list(self.tc.containers.values())[0]
+        try:
+            self.container =list(self.tc.containers.values())[0]
+        except:
+            self.container=None
         self.container_updated=False
         
 
         data_tracker = Transformation("data_tracker", site=self.site, pfn=os.path.join(os.path.dirname(os.path.abspath(__file__)), "Versionning/versiondata.py"), is_stageable=True, container=self.container)
         combiner = Transformation("combiner", site=self.site, pfn=os.path.join(os.path.dirname(os.path.abspath(__file__)), "Versionning/pegasus_yaml_combiner.py"), is_stageable=True, container=self.container)
+        versioning_transformations=Transformation("version_transformations", site=self.site, pfn=os.path.join(os.path.dirname(os.path.abspath(__file__)), "Versionning/transformationVersioning.py"), is_stageable=True, container=self.container)
         cp_transformation = Transformation("cp", site='local', pfn="/bin/cp", is_stageable=False)
-        self.tc.add_transformations(data_tracker,combiner,cp_transformation)
+        self.tc.add_transformations(data_tracker,combiner,versioning_transformations,cp_transformation)
         
 
     def move_element_to_index(self,od, source_index, target_index):
-        if not isinstance(od, OrderedDict) or source_index < 0 or source_index >= len(od) or target_index < 0 or target_index >= len(od):
+        if not isinstance(od, OrderedDict) or source_index < 0 or source_index >= len(od)+1 or target_index < 0 or target_index >= len(od)+1:
             raise ValueError("Invalid OrderedDict or source/target index")
 
         # Get the items as (key, value) pairs
@@ -162,91 +168,97 @@ class PegasusTracker():
         return od
 
     def track_input(self):
-        
-        suffixe="tracker_data_job_input_"
-        job_index=0
-        files_to_track=[]
-        wf_jobs=len(list(self.wf.jobs.items()))
-        mlflow_job_file={}
-        for job_name,job_object in list(self.wf.jobs.items()):
-            mlflow_files_type=[]
-            file_index=0
-            for file in  job_object.get_inputs():
-                print(file)
-                if "input_track" in file.__dict__['metadata']:
-                    files_to_track.append({file.lfn : {"job":job_name, "next_index":job_index+1,"current_index":wf_jobs}})
-                    del file.__dict__['metadata']["input_track"] 
-                if "mlflow" in  file.__dict__['metadata'] and job_name not in self.mlflow_runs and self.mlflow==True:
-                    if "auto" in file.__dict__['metadata']['mlflow']:
-                        self.MLflowConfiguer(file.__dict__['metadata']['mlflow'],job_name)
-                    else:
-                        mlflow_files_type.append({file.lfn :literal_eval(file.__dict__['metadata']['mlflow'])["FILE_TYPE"]})
-                        if file_index==len(list(job_object.get_inputs())):
-                            self.MLflowConfiguer(file.__dict__['metadata']['mlflow'],job_name,mlflow_files_type)
+        if self.rc==None:
+            print("nothing")
+        else:
+            suffixe="tracker_data_job_input_"
+            job_index=0
+            files_to_track=[]
+            wf_jobs=len(list(self.wf.jobs.items()))
+            mlflow_job_file={}
+            for job_name,job_object in list(self.wf.jobs.items()):
+                mlflow_files_type=[]
+                file_index=0
+                for file in  job_object.get_inputs():
+                    if "input_track" in file.__dict__['metadata']:
+                        files_to_track.append({file.lfn : {"job":job_name, "next_index":job_index+1,"current_index":job_index}})
+                        del file.__dict__['metadata']["input_track"] 
+                    if "mlflow" in  file.__dict__['metadata'] and job_name not in self.mlflow_runs and self.mlflow==True:
+                        if "auto" in file.__dict__['metadata']['mlflow']:
+                            if self.PARENT_MLFLOW_ID==None:
+                                self.PARENT_MLFLOW_ID=self.MLflowConfiguerParent()
+                            print("-------------Hada rah Parent ID-----------------")
+                            print(f"---------------{self.PARENT_MLFLOW_ID}-----------")
+                            self.MLflowConfiguer(file.__dict__['metadata']['mlflow'],job_name,run_parent_id=self.PARENT_MLFLOW_ID)
                         else:
-                            self.MLflowConfiguer(file.__dict__['metadata']['mlflow'],job_name)
+                            mlflow_files_type.append({file.lfn :literal_eval(file.__dict__['metadata']['mlflow'])["FILE_TYPE"]})
+                            if file_index==len(list(job_object.get_inputs())):
+                                self.MLflowConfiguer(file.__dict__['metadata']['mlflow'],job_name,mlflow_files_type)
+                            else:
+                                self.MLflowConfiguer(file.__dict__['metadata']['mlflow'],job_name)
 
-                    #mlflow_jobs[job_name]=file.__dict__['metadata']['mlflow']
-                    self.mlflow_runs.add(job_name) 
-                file_index=file_index+1
-            job_index=job_index+1
-            wf_jobs=wf_jobs+1
-            mlflow_job_file[job_name]=mlflow_files_type
-        for rc_name, rc_object in  list(self.rc.entries.items()):
-            lfn=rc_object.__dict__["lfn"]
-            key_exists = any(lfn in d for d in files_to_track)
-            if key_exists:
-                # Find the dictionary with the key and update it with the new key-value pair
-                for d in files_to_track:
-                    if lfn in d:
-                        d[lfn]["pfn"] = list(rc_object.__dict__['pfns'])[0].pfn
+                        #mlflow_jobs[job_name]=file.__dict__['metadata']['mlflow']
+                        self.mlflow_runs.add(job_name) 
+                    file_index=file_index+1
+                job_index=job_index+1
+                wf_jobs=wf_jobs+1
+                mlflow_job_file[job_name]=mlflow_files_type
+            for rc_name, rc_object in  list(self.rc.entries.items()):
+                lfn=rc_object.__dict__["lfn"]
+                key_exists = any(lfn in d for d in files_to_track)
+                if key_exists:
+                    # Find the dictionary with the key and update it with the new key-value pair
+                    for d in files_to_track:
+                        if lfn in d:
+                            d[lfn]["pfn"] = list(rc_object.__dict__['pfns'])[0].pfn
 
-        grouped_data = {}
-        for data in files_to_track:
-            key = next(iter(data))
-            job_value = data[key]['job']
-            if job_value not in grouped_data:
-                grouped_data[job_value] = []
-            grouped_data[job_value].append(data)
-        
-        for job_name, dictionaries in grouped_data.items():
-            current_files_tracker=set()
-            current_files_pfn=[]
-            for data in dictionaries:
-                current_files_pfn.append(list(data.items())[0][1]["pfn"])
-                current_files_tracker.update(data.keys())
-            #job_name=file[list(file.keys())[0]]["job"]
-            metadata_input_files=File(f"pegasus-data/metadata_{job_name}_input.yaml")
-            self.metadata_version_outputs.append(metadata_input_files)
-            str_gdrive=""
-            str_bucket=""
-            job_args=f"-files {' '.join(list(current_files_tracker))} -data_dir pegasus-data -metadata_format yaml -o pegasus-data/metadata_{job_name}_input -file_type inputs -pfn {' '.join(list(current_files_pfn))}"
-            print("creating jobs")
-            locals()[f"tracker_data_job_input_{job_name}"]=(Job(transformation="data_tracker", _id=f"tracker_data_job_{job_name}_input", node_label=f"tracker_data_job_{job_name}_input")
-                    .add_inputs(*[File(x) for x in list(current_files_tracker)])
-                    .add_outputs(metadata_input_files)
-                    .add_pegasus_profile(label=job_name)
-                )
-            #.add_args(f"-files {' '.join(list(current_files_tracker))} -data_dir pegasus-data -bucket -bcredentials bucket -metadata_format yaml   -gdrive -remote_id {self.remote_id}  -o pegasus-data/metadata_{job_name}_input -gcredentials {self.credentials} -file_type inputs -pfn {' '.join(list(current_files_pfn))}")
-            print(f"tracker_data_job_input_{job_name} created ")
-            if self.bucket_credentials is not None:
-                str_bucket= f"-bucket -bcredentials {self.bucket_credentials}"
-                locals()[f"tracker_data_job_input_{job_name}"].add_inputs(self.bucket_credentials)
-            if self.credentials is not None:
-                str_gdrive= f"-gdrive -remote_id {self.remote_id} -gcredentials {self.credentials}"
-                locals()[f"tracker_data_job_input_{job_name}"].add_inputs(self.credentials)
-            locals()[f"tracker_data_job_input_{job_name}"].add_args(f"{job_args} {str_bucket} {str_gdrive}".replace("  ", " ").strip())
-            if job_name  in self.mlflow_jobs_run_id :
-                if self.mlflow_jobs_run_id[job_name].get("config")=="custom":
-                    locals()[f"tracker_data_job_input_{job_name}"].add_env(MLFLOW_JOB_NAME= job_name, MLFLOW_EXPERIMENT_NAME=self.mlflow_jobs_run_id[job_name]["MLFLOW_EXPERIMENT_NAME"],MLFLOW_TRACKING_URI=self.config.get('MLflow', 'tracking_uri'),**self.MLFLOW_CREDENTIALS,ENABLE_MLFLOW=True, MLFLOW_RUN=[key for key in self.mlflow_jobs_run_id[job_name] if key != "MLFLOW_EXPERIMENT_NAME"][0],MLFLOW_RUN_ID=[self.mlflow_jobs_run_id[job_name][key] for key in self.mlflow_jobs_run_id[job_name] if key != "MLFLOW_EXPERIMENT_NAME"][0],FILE_TYPE=str(mlflow_job_file[job_name]))
-                else:
-                     locals()[f"tracker_data_job_input_{job_name}"].add_env(MLFLOW_RUN_ID=[self.mlflow_jobs_run_id[job_name][key] for key in self.mlflow_jobs_run_id[job_name] if key != "MLFLOW_EXPERIMENT_NAME"][0])
-            self.wf.get_job(job_name).add_pegasus_profile(label=job_name)
-            self.wf.add_jobs(locals()[f"tracker_data_job_input_{job_name}"])
-            self.wf.add_dependency(self.wf.get_job(job_name),children=[locals()[f"tracker_data_job_input_{job_name}"]])
-           
-        for file in files_to_track:
-            self.move_element_to_index(self.wf.jobs,source_index=file[list(file.keys())[0]]["current_index"],target_index=file[list(file.keys())[0]]["next_index"])
+            grouped_data = {}
+            for data in files_to_track:
+                key = next(iter(data))
+                job_value = data[key]['job']
+                if job_value not in grouped_data:
+                    grouped_data[job_value] = []
+                grouped_data[job_value].append(data)
+            
+            for job_name, dictionaries in grouped_data.items():
+                current_files_tracker=set()
+                current_files_pfn=[]
+                for data in dictionaries:
+                    current_files_pfn.append(list(data.items())[0][1]["pfn"])
+                    current_files_tracker.update(data.keys())
+                #job_name=file[list(file.keys())[0]]["job"]
+                metadata_input_files=File(f"pegasus-data/metadata_{job_name}_input.yaml")
+                self.metadata_version_outputs.append(metadata_input_files)
+                str_gdrive=""
+                str_bucket=""
+                job_args=f"-files {' '.join(list(current_files_tracker))} -data_dir pegasus-data -metadata_format yaml -o pegasus-data/metadata_{job_name}_input -file_type inputs -pfn {' '.join(list(current_files_pfn))}"
+                print("creating jobs")
+                locals()[f"tracker_data_job_input_{job_name}"]=(Job(transformation="data_tracker", _id=f"tracker_data_job_{job_name}_input", node_label=f"tracker_data_job_{job_name}_input")
+                        .add_inputs(*[File(x) for x in list(current_files_tracker)])
+                        .add_outputs(metadata_input_files)
+                        .add_pegasus_profile(label=job_name)
+                    )
+                #.add_args(f"-files {' '.join(list(current_files_tracker))} -data_dir pegasus-data -bucket -bcredentials bucket -metadata_format yaml   -gdrive -remote_id {self.remote_id}  -o pegasus-data/metadata_{job_name}_input -gcredentials {self.credentials} -file_type inputs -pfn {' '.join(list(current_files_pfn))}")
+                print(f"tracker_data_job_input_{job_name} created ")
+                if self.bucket_credentials is not None:
+                    str_bucket= f"-bucket -bcredentials {self.bucket_credentials}"
+                    locals()[f"tracker_data_job_input_{job_name}"].add_inputs(self.bucket_credentials)
+                if self.credentials is not None:
+                    str_gdrive= f"-gdrive -remote_id {self.remote_id} -gcredentials {self.credentials}"
+                    locals()[f"tracker_data_job_input_{job_name}"].add_inputs(self.credentials)
+                locals()[f"tracker_data_job_input_{job_name}"].add_args(f"{job_args} {str_bucket} {str_gdrive}".replace("  ", " ").strip())
+                if job_name  in self.mlflow_jobs_run_id :
+                    if self.mlflow_jobs_run_id[job_name].get("config")=="custom":
+                        locals()[f"tracker_data_job_input_{job_name}"].add_env(MLFLOW_JOB_NAME= job_name, MLFLOW_EXPERIMENT_NAME=self.mlflow_jobs_run_id[job_name]["MLFLOW_EXPERIMENT_NAME"],MLFLOW_TRACKING_URI=self.config.get('MLflow', 'tracking_uri'),**self.MLFLOW_CREDENTIALS,ENABLE_MLFLOW=True, MLFLOW_RUN=[key for key in self.mlflow_jobs_run_id[job_name] if key != "MLFLOW_EXPERIMENT_NAME"][0],MLFLOW_RUN_ID=[self.mlflow_jobs_run_id[job_name][key] for key in self.mlflow_jobs_run_id[job_name] if key != "MLFLOW_EXPERIMENT_NAME"][0],FILE_TYPE=str(mlflow_job_file[job_name]))
+                    else:
+                        locals()[f"tracker_data_job_input_{job_name}"].add_env(MLFLOW_RUN_ID=[self.mlflow_jobs_run_id[job_name][key] for key in self.mlflow_jobs_run_id[job_name] if key != "MLFLOW_EXPERIMENT_NAME"][0])
+                self.wf.get_job(job_name).add_pegasus_profile(label=job_name)
+                self.wf.add_jobs(locals()[f"tracker_data_job_input_{job_name}"])
+                self.wf.add_dependency(self.wf.get_job(job_name),children=[locals()[f"tracker_data_job_input_{job_name}"]])
+            
+            for file in files_to_track:
+                
+                self.move_element_to_index(self.wf.jobs,source_index=file[list(file.keys())[0]]["current_index"],target_index=file[list(file.keys())[0]]["next_index"])
 
         return self.wf
     
@@ -262,12 +274,14 @@ class PegasusTracker():
 
             for file in  job_object.get_outputs():
                 if "output_track" in file.__dict__['metadata']:
-                    files_to_track_output.append({file.lfn : {"job":job_name, "next_index":job_index+1,"current_index":wf_jobs,"pfn":os.path.join(self.local_storage_dir,file.lfn)}})
+                    files_to_track_output.append({file.lfn : {"job":job_name, "next_index":job_index+1,"current_index":job_index,"pfn":os.path.join(self.local_storage_dir,file.lfn)}})
                     del file.__dict__['metadata']["output_track"]
 
                 if "mlflow" in  file.__dict__['metadata'] and job_name not in self.mlflow_runs and self.mlflow==True:
                         if "auto" in file.__dict__['metadata']['mlflow']:
-                            self.MLflowConfiguer(file.__dict__['metadata']['mlflow'],job_name)
+                            if self.PARENT_MLFLOW_ID==None:
+                                self.PARENT_MLFLOW_ID=self.MLflowConfiguerParent()
+                            self.MLflowConfiguer(file.__dict__['metadata']['mlflow'],job_name,run_parent_id=self.PARENT_MLFLOW_ID)
                         else:
                             mlflow_files_type.append({file.lfn :literal_eval(file.__dict__['metadata']['mlflow'])["FILE_TYPE"]})
                             if file_index==len(list(job_object.get_inputs())):
@@ -326,16 +340,53 @@ class PegasusTracker():
             self.move_element_to_index(self.wf.jobs,source_index=file[list(file.keys())[0]]["current_index"],target_index=file[list(file.keys())[0]]["next_index"])
         return self.wf
     
+    def track_transformations(self):
+        if self.rc==None:
+            self.rc=ReplicaCatalog()
+        self.wf_transformations_name = []
+        self.wf_transformations_path = []
+        self.transfomations_replicas_file=[]
+        wf_trans = list(self.wf.transformation_catalog.__dict__.items())
+        metadata_output_files=File(f"pegasus-data/metadata_transformations.yaml")
+        self.metadata_version_outputs.append(metadata_output_files)
+        for trans in wf_trans:
+            if trans[0] == "transformations":
+                for trans_key, trans_value in trans[1].items():
+                    if ("track_Trans" in list(trans_value.__dict__["metadata"].keys())) and bool(trans_value.__dict__["metadata"]["track_Trans"]) == True:
+                        trans_dict = trans_value.__dict__
+                        trans_name = trans_dict["name"]
+                        for site in trans_dict["sites"].items():
+                            trans_description = site[1].__dict__
+                            trans_pfn = site[1].__dict__["pfn"]
+                            trans_type = site[1].__dict__[
+                                "transformation_type"]
+                        self.wf_transformations_name.append(trans_name)
+                        self.wf_transformations_path.append(trans_pfn)
+                    
+        for id,used_transformation_path in enumerate(self.wf_transformations_path):
+            self.rc.add_replica("local",self.wf_transformations_name[id],used_transformation_path)
+            self.transfomations_replicas_file.append(File(self.wf_transformations_name[id]))
+        job_args=f"-files {' '.join([x.lfn for x in self.transfomations_replicas_file])} -names {' '.join([x for x in self.wf_transformations_name])} -path {' '.join([x for x in self.wf_transformations_path])} --use-git -token {self.token} -owner {self.owner} -repo {self.repo} -branch {self.branch}"
+        transformation_versioning_job=(Job("version_transformations",_id="transformation_versioning_job", node_label="transformation_versioning_job")
+                                                .add_inputs(*self.transfomations_replicas_file)
+                                                .add_outputs(metadata_output_files)
+                                                .add_args(job_args)) 
+        self.wf.add_jobs(transformation_versioning_job)
+
+        return self.wf
+
+
     def track_wf(self):
-        
-        if self.wf.__dict__['metadata']["wf_track"]:
+        if "wf_track" in self.wf.__dict__['metadata'].keys():
             if self.sc is None:
                 pass
             else:
                 self.wf.add_site_catalog(self.sc)
-            print(self.rc.__dict__)
+            #print(self.rc.__dict__)
             #self.wf.add_replica_catalog(self.rc)
             #self.wf.add_transformation_catalog(self.tc)
+            if self.rc==None:
+                self.rc = ReplicaCatalog()
             self.rc.add_replica("local", "wf", os.path.join(self.wf_dir, self.dagfile))
             wf_name_track=File("wf")
             output_wf=File(f"pegasus-data/metadata_{wf_name_track}.yaml")
@@ -361,30 +412,31 @@ class PegasusTracker():
         return self.wf
     
     def build_metadata(self):
-        self.metadata_output_combiner=File(f"metadata.yaml")
-        metadata_output_combiner_job=(Job("combiner", _id="metadata_combiner", node_label="metadata_combiner")
-                               .add_inputs(*self.metadata_version_outputs,self.metadata_file)
-                               .add_outputs(self.metadata_output_combiner,stage_out=True, register_replica=False)
+        if self.metadata_combiner :
+            self.metadata_output_combiner=File(f"metadata.yaml")
+            metadata_output_combiner_job=(Job("combiner", _id="metadata_combiner", node_label="metadata_combiner")
+                                .add_inputs(*self.metadata_version_outputs,self.metadata_file)
+                                .add_outputs(self.metadata_output_combiner,stage_out=True, register_replica=False)
+            
+            )
+            if self.use_git:
+                if self.pull:
+                    metadata_output_combiner_job.add_args(f"-files {' '.join([x.lfn for x in self.metadata_version_outputs])} -output_file_name {self.metadata_file} -file_type yaml --use-git -token {self.token} -owner {self.owner} -repo {self.repo} -branch {self.branch} -pull")
+                else:
+                    metadata_output_combiner_job.add_args(f"-files {' '.join([x.lfn for x in self.metadata_version_outputs])} -output_file_name {self.metadata_file} -file_type yaml --use-git -token {self.token} -owner {self.owner} -repo {self.repo} -branch {self.branch}")
+
+            else: 
+                metadata_output_combiner_job.add_args(f"-files {' '.join([x.lfn for x in self.metadata_version_outputs])} -output_file_name {self.metadata_file} -file_type yaml")
+
+            self.wf.add_jobs(metadata_output_combiner_job)  
         
-        )
-        if self.use_git:
-            if self.pull:
-                metadata_output_combiner_job.add_args(f"-files {' '.join([x.lfn for x in self.metadata_version_outputs])} -output_file_name {self.metadata_file} -file_type yaml --use-git -token {self.token} -owner {self.owner} -repo {self.repo} -branch {self.branch} -pull")
-            else:
-                metadata_output_combiner_job.add_args(f"-files {' '.join([x.lfn for x in self.metadata_version_outputs])} -output_file_name {self.metadata_file} -file_type yaml --use-git -token {self.token} -owner {self.owner} -repo {self.repo} -branch {self.branch}")
 
-        else: 
-            metadata_output_combiner_job.add_args(f"-files {' '.join([x.lfn for x in self.metadata_version_outputs])} -output_file_name {self.metadata_file} -file_type yaml")
-
-        self.wf.add_jobs(metadata_output_combiner_job)  
-    
-
-        cp_job=Job("cp",_id="copy_file", node_label="copy_file")\
-                  .add_args(self.metadata_output_combiner, DEFAULT_CONFIG_DIR)\
-                  .add_inputs(self.metadata_output_combiner)\
-                  .add_profiles(Namespace.SELECTOR, key="execution.site", value="local")\
-                  
-        self.wf.add_jobs(cp_job)
+            cp_job=Job("cp",_id="copy_file", node_label="copy_file")\
+                    .add_args(self.metadata_output_combiner, DEFAULT_CONFIG_DIR)\
+                    .add_inputs(self.metadata_output_combiner)\
+                    .add_profiles(Namespace.SELECTOR, key="execution.site", value="local")\
+                    
+            self.wf.add_jobs(cp_job)
 
         return self.wf
     
@@ -392,7 +444,9 @@ class PegasusTracker():
             self.wf=self.track_input()
             self.wf=self.track_output()
             self.wf=self.track_wf()
+            self.wf=self.track_transformations()
             self.wf=self.build_metadata()
+            
             return self.wf
 
 
@@ -404,7 +458,7 @@ class PegasusTracker():
 
         for job_name,job_object in list(self.wf.jobs.items()):
             for file in  job_object.get_inputs():
-                files_to_track.append({file.lfn : {"job":job_name, "next_index":job_index+1,"current_index":wf_jobs}})
+                files_to_track.append({file.lfn : {"job":job_name, "next_index":job_index+1,"current_index":job_index}})
             job_index=job_index+1
             wf_jobs=wf_jobs+1
 
@@ -453,7 +507,7 @@ class PegasusTracker():
         wf_jobs=len(list(self.wf.jobs.items()))
         for job_name,job_object in list(self.wf.jobs.items()):
             for file in  job_object.get_outputs():
-                files_to_track_output.append({file.lfn : {"job":job_name, "next_index":job_index+1,"current_index":wf_jobs,"pfn":os.path.join(self.local_storage_dir,file.lfn)}})
+                files_to_track_output.append({file.lfn : {"job":job_name, "next_index":job_index+1,"current_index":job_index,"pfn":os.path.join(self.local_storage_dir,file.lfn)}})
 
         grouped_data = {}
         for data in files_to_track_output:
@@ -498,12 +552,8 @@ class PegasusTracker():
                 )
         self.wf.add_jobs(locals()[f"tracker_wf_{self.wf.__dict__['name']}"])
 
-    def MLflowConfiguer(self,config,job_name,file_type=None):
-        #REPO_OWNER="swarmourr"
-        #REPO_NAME="FL-WF"
-        #mlflow.set_tracking_uri(f'https://dagshub.com/{REPO_OWNER}/{REPO_NAME}.mlflow')
+    def MLflowConfiguer(self,config,job_name,file_type=None,run_parent_id=None):
         required_keys = ["name", "container_type", "image", "arguments", "mounts", "image_site", "checksum", "metadata", "bypass_staging"]
-        
         try:
             if isinstance(literal_eval(config), dict):
                 mlflow_config=dict(literal_eval(config))
@@ -530,7 +580,11 @@ class PegasusTracker():
                     arguments_container["container_type"]=eval("Container."+str(arguments_container["container_type"].upper()))               
                     self.mlflow_repos.create_experiment(self.wf.__dict__["name"])
                     if job_name not in self.mlflow_jobs_run_id:
-                        run_id=self.mlflow_repos.create_run(experiment_name=self.wf.__dict__["name"],run_name=f'{job_name}')
+                        if run_parent_id==None:
+                            run_id=self.mlflow_repos.create_run(experiment_name=self.wf.__dict__["name"],run_name=f'{job_name}')
+                        else:
+                            print(f"----- inisde  :{run_parent_id}")
+                            run_id=self.mlflow_repos.create_run(experiment_name=self.wf.__dict__["name"],run_name=f'{job_name}',tags=run_parent_id)
                         self.mlflow_jobs_run_id[job_name]={job_name:run_id,"config":"auto"}
                     else:
                         run_id= self.mlflow_jobs_run_id[job_name][job_name]
@@ -542,7 +596,12 @@ class PegasusTracker():
                     #self.mlflow_jobs_run_id[job_name]=run_id
                 else:
                     if job_name not in self.mlflow_jobs_run_id:
-                        run_id=self.mlflow_repos.create_run(experiment_name=self.wf.__dict__["name"],run_name=f'{job_name}')
+                        if run_parent_id==None:
+                            print("je suis nOne")
+                            run_id=self.mlflow_repos.create_run(experiment_name=self.wf.__dict__["name"],run_name=f'{job_name}')
+                        else:
+                            print(f"----- inisde  :{run_parent_id}")
+                            run_id=self.mlflow_repos.create_run(experiment_name=self.wf.__dict__["name"],run_name=f'{job_name}',tags=run_parent_id)
                         self.mlflow_jobs_run_id[job_name]={job_name:run_id,"config":"auto"}
                     else:
                         run_id= self.mlflow_jobs_run_id[job_name][job_name]
@@ -553,6 +612,10 @@ class PegasusTracker():
                 print(job_name)
                 print(config)
                 raise ValueError("Invalid configuration type.")
+            
+    def MLflowConfiguerParent(self):
+        self.mlflow_repos.create_experiment(self.wf.__dict__["name"])
+        return self.mlflow_repos.create_run(experiment_name=self.wf.__dict__["name"],run_name=f'{datetime.now().strftime("%Y%m%d%H%M%S")}_{self.wf.__dict__["name"]}')
             
 
 class AbstractJob(HookMixin, ProfileMixin, MetadataMixin):
