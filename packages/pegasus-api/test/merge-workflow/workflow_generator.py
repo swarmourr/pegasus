@@ -38,7 +38,8 @@ class MergeWorkflow:
         #self.rc.write()
         #self.tc.write()
         self.wf.add_transformation_catalog(self.tc)
-        #self.wf.add_replica_catalog(self.)
+        self.rc=ReplicaCatalog()
+        self.wf.add_replica_catalog(self.rc)
         self.wf.write()
         return
 
@@ -90,8 +91,8 @@ class MergeWorkflow:
 
     # --- Create Workflow -----------------------------------------------------
     def create_workflow(self):
-        self.wf = Workflow(self.wf_name, infer_dependencies=True)
-        self.wf.add_metadata(wf_track=True)
+        self.wf = Workflow(self.wf_name, infer_dependencies=True,tracker_type="auto")
+       
 
         dirs = ("/bin", "/usr/bin", "/usr/local/bin")
         cat = Job("cat")

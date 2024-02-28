@@ -167,7 +167,7 @@ class PegasusTracker():
 
         return od
 
-    def track_input(self):
+    def track_input(self,full=False):
         if self.rc==None:
             print("nothing")
         else:
@@ -180,15 +180,16 @@ class PegasusTracker():
                 mlflow_files_type=[]
                 file_index=0
                 for file in  job_object.get_inputs():
-                    if "input_track" in file.__dict__['metadata']:
+                    if ("input_track" in file.__dict__['metadata']) or (full==True):
                         files_to_track.append({file.lfn : {"job":job_name, "next_index":job_index+1,"current_index":job_index}})
-                        del file.__dict__['metadata']["input_track"] 
-                    if "mlflow" in  file.__dict__['metadata'] and job_name not in self.mlflow_runs and self.mlflow==True:
+                        if not full:
+                            del file.__dict__['metadata']["input_track"] 
+                    if ("mlflow" in  file.__dict__['metadata'] and job_name not in self.mlflow_runs and self.mlflow==True) or  (full==True):
+                        if full:
+                            file.__dict__['metadata']['mlflow']="auto"
                         if "auto" in file.__dict__['metadata']['mlflow']:
                             if self.PARENT_MLFLOW_ID==None:
                                 self.PARENT_MLFLOW_ID=self.MLflowConfiguerParent()
-                            print("-------------Hada rah Parent ID-----------------")
-                            print(f"---------------{self.PARENT_MLFLOW_ID}-----------")
                             self.MLflowConfiguer(file.__dict__['metadata']['mlflow'],job_name,run_parent_id=self.PARENT_MLFLOW_ID)
                         else:
                             mlflow_files_type.append({file.lfn :literal_eval(file.__dict__['metadata']['mlflow'])["FILE_TYPE"]})
@@ -224,8 +225,11 @@ class PegasusTracker():
                 current_files_tracker=set()
                 current_files_pfn=[]
                 for data in dictionaries:
-                    current_files_pfn.append(list(data.items())[0][1]["pfn"])
-                    current_files_tracker.update(data.keys())
+                    try:
+                        current_files_pfn.append(list(data.items())[0][1]["pfn"])
+                        current_files_tracker.update(data.keys())
+                    except:
+                        pass
                 #job_name=file[list(file.keys())[0]]["job"]
                 metadata_input_files=File(f"pegasus-data/metadata_{job_name}_input.yaml")
                 self.metadata_version_outputs.append(metadata_input_files)
@@ -262,7 +266,7 @@ class PegasusTracker():
 
         return self.wf
     
-    def track_output(self):
+    def track_output(self,full=False):
         job_index=0
         files_to_track_output=[]
         mlflow_job_file={}
@@ -273,11 +277,15 @@ class PegasusTracker():
             mlflow_files_type=[]
 
             for file in  job_object.get_outputs():
-                if "output_track" in file.__dict__['metadata']:
+                if ("output_track" in file.__dict__['metadata']) or (full==True):
                     files_to_track_output.append({file.lfn : {"job":job_name, "next_index":job_index+1,"current_index":job_index,"pfn":os.path.join(self.local_storage_dir,file.lfn)}})
-                    del file.__dict__['metadata']["output_track"]
+                    if not full:
+                        del file.__dict__['metadata']["output_track"]
 
-                if "mlflow" in  file.__dict__['metadata'] and job_name not in self.mlflow_runs and self.mlflow==True:
+                if ("mlflow" in  file.__dict__['metadata'] and job_name not in self.mlflow_runs and self.mlflow==True) or (full==True):
+                        if full:
+                            file.__dict__['metadata']['mlflow']="auto"
+                        
                         if "auto" in file.__dict__['metadata']['mlflow']:
                             if self.PARENT_MLFLOW_ID==None:
                                 self.PARENT_MLFLOW_ID=self.MLflowConfiguerParent()
@@ -340,7 +348,7 @@ class PegasusTracker():
             self.move_element_to_index(self.wf.jobs,source_index=file[list(file.keys())[0]]["current_index"],target_index=file[list(file.keys())[0]]["next_index"])
         return self.wf
     
-    def track_transformations(self):
+    def track_transformations(self,full=False):
         if self.rc==None:
             self.rc=ReplicaCatalog()
         self.wf_transformations_name = []
@@ -352,7 +360,7 @@ class PegasusTracker():
         for trans in wf_trans:
             if trans[0] == "transformations":
                 for trans_key, trans_value in trans[1].items():
-                    if ("track_Trans" in list(trans_value.__dict__["metadata"].keys())) and bool(trans_value.__dict__["metadata"]["track_Trans"]) == True:
+                    if (("track_Trans" in list(trans_value.__dict__["metadata"].keys())) and bool(trans_value.__dict__["metadata"]["track_Trans"]) == True) or (full==True):
                         trans_dict = trans_value.__dict__
                         trans_name = trans_dict["name"]
                         for site in trans_dict["sites"].items():
@@ -376,8 +384,8 @@ class PegasusTracker():
         return self.wf
 
 
-    def track_wf(self):
-        if "wf_track" in self.wf.__dict__['metadata'].keys():
+    def track_wf(self,full=False):
+        if ("wf_track" in self.wf.__dict__['metadata'].keys()) or (full==True):
             if self.sc is None:
                 pass
             else:
@@ -441,10 +449,10 @@ class PegasusTracker():
         return self.wf
     
     def full_tracker(self):
-            self.wf=self.track_input()
-            self.wf=self.track_output()
-            self.wf=self.track_wf()
-            self.wf=self.track_transformations()
+            self.wf=self.track_input(full=True)
+            self.wf=self.track_output(full=True)
+            self.wf=self.track_wf(full=True)
+            self.wf=self.track_transformations(full=True)
             self.wf=self.build_metadata()
             
             return self.wf
@@ -491,11 +499,11 @@ class PegasusTracker():
             #job_name=file[list(file.keys())[0]]["job"]
             metadata_input_files=File(f"pegasus-data/metadata_{job_name}_input.yaml")
             self.metadata_version_outputs.append(metadata_input_files)
-            locals()[f"tracker_data_job_input_{job_name}"]=(Job("data_tracker", _id=f"tracker_data_job_{job_name}_input", node_label=f"tracker_data_job_{job_name}_input")
-                    .add_args(f"-files {' '.join(list(current_files_tracker))} -data_dir pegasus-data -metadata_format yaml  -bucket -bucket_credentials {self.bucket_credentials}-gdrive -remote_id {self.remote_id}  -o pegasus-data/metadata_{job_name}_input -gcredentials {self.credentials} -file_type inputs -pfn {' '.join(list(current_files_pfn))}")
-                    .add_inputs(*[File(x) for x in list(current_files_tracker)],self.credentials , self.bucket_credentials)
-                    .add_outputs(metadata_input_files)
-                )
+            locals()[f"tracker_data_job_input_{job_name}"]=(Job(transformation="data_tracker", _id=f"tracker_data_job_{job_name}_input", node_label=f"tracker_data_job_{job_name}_input")
+                        .add_inputs(*[File(x) for x in list(current_files_tracker)])
+                        .add_outputs(metadata_input_files)
+                        .add_pegasus_profile(label=job_name)
+                    )
             self.wf.add_jobs(locals()[f"tracker_data_job_input_{job_name}"])
         for file in files_to_track:
             self.move_element_to_index(self.wf.jobs,source_index=file[list(file.keys())[0]]["current_index"],target_index=file[list(file.keys())[0]]["next_index"])
@@ -527,11 +535,11 @@ class PegasusTracker():
             #job_name=file[list(file.keys())[0]]["job"]
             metadata_output_files=File(f"pegasus-data/metadata_{job_name}_output.yaml")
             self.metadata_version_outputs.append(metadata_output_files)
-            locals()[f"tracker_data_job_output_{job_name}"]=(Job("data_tracker", _id=f"tracker_data_job_{job_name}_output", node_label=f"tracker_data_job_{job_name}_output")
-                    .add_args(f"-files {' '.join(list(current_files_tracker))} -data_dir pegasus-data -metadata_format yaml  -bucket -bcredentials  bucket -gdrive -remote_id {self.remote_id}  -o pegasus-data/metadata_{job_name}_output -gcredentials {self.credentials} -file_type outputs -pfn {' '.join(list(current_files_pfn))}")
-                    .add_inputs(*[File(x) for x in list(current_files_tracker)],self.credentials,self.bucket_credentials)
-                    .add_outputs(metadata_output_files)
-                )
+            locals()[f"tracker_data_job_output_{job_name}"]=(Job(transformation="data_tracker", _id=f"tracker_data_job_{job_name}_output", node_label=f"tracker_data_job_{job_name}_output")
+                        .add_inputs(*[File(x) for x in list(current_files_tracker)])
+                        .add_outputs(metadata_output_files)
+                        .add_pegasus_profile(label=job_name)
+                    )
             
             self.wf.add_jobs(locals()[f"tracker_data_job_output_{job_name}"])
 
@@ -541,7 +549,7 @@ class PegasusTracker():
 
 
         #-------track wf------------
-        self.rc.add_replica("local", "wf", os.path.join(self.wf_dir, self.dagfile))
+        """self.rc.add_replica("local", "wf", os.path.join(self.wf_dir, self.dagfile))
         wf_name_track=File("wf")
         output_wf=File(f"pegasus-data/metadata_{wf_name_track}.yaml")
         self.metadata_version_outputs.append(output_wf)
@@ -550,7 +558,7 @@ class PegasusTracker():
                     .add_inputs(wf_name_track,self.credentials,self.bucket_credentials)
                     .add_outputs(output_wf)
                 )
-        self.wf.add_jobs(locals()[f"tracker_wf_{self.wf.__dict__['name']}"])
+        self.wf.add_jobs(locals()[f"tracker_wf_{self.wf.__dict__['name']}"])"""
 
     def MLflowConfiguer(self,config,job_name,file_type=None,run_parent_id=None):
         required_keys = ["name", "container_type", "image", "arguments", "mounts", "image_site", "checksum", "metadata", "bypass_staging"]
@@ -572,8 +580,8 @@ class PegasusTracker():
                 else:
                     self.wf.get_job(job_name).add_env(MLFLOW_JOB_NAME= job_name, ENABLE_MLFLOW=True, MLFLOW_EXPERIMENT_NAME=mlflow_config['MLFLOW_EXPERIMENT'],MLFLOW_RUN=mlflow_config['MLFLOW_RUN'],MLFLOW_TRACKING_URI=self.config.get('MLflow', 'tracking_uri'),MLFLOW_RUN_ID=run_id,**self.MLFLOW_CREDENTIALS,FILE_TYPE=str(file_type))
         except:
-            if isinstance(config, str) and config=="auto":
-                if not self.container_updated:
+            if (isinstance(config, str) and config=="auto") :
+                if (not self.container_updated) and (self.container!= None) :
                     arguments_container=self.container.__dict__
                     arguments_container={key: value for key, value in arguments_container.items() if value is not None}
                     arguments_container = {key: arguments_container[key] for key in required_keys if key in arguments_container} 
@@ -597,16 +605,13 @@ class PegasusTracker():
                 else:
                     if job_name not in self.mlflow_jobs_run_id:
                         if run_parent_id==None:
-                            print("je suis nOne")
                             run_id=self.mlflow_repos.create_run(experiment_name=self.wf.__dict__["name"],run_name=f'{job_name}')
                         else:
-                            print(f"----- inisde  :{run_parent_id}")
                             run_id=self.mlflow_repos.create_run(experiment_name=self.wf.__dict__["name"],run_name=f'{job_name}',tags=run_parent_id)
                         self.mlflow_jobs_run_id[job_name]={job_name:run_id,"config":"auto"}
                     else:
                         run_id= self.mlflow_jobs_run_id[job_name][job_name]
                     self.wf.get_job(job_name).add_env(MLFLOW_RUN_ID=run_id)
-                    print("container already updated")
                 print(self.mlflow_jobs_run_id)
             else:
                 print(job_name)
@@ -1655,7 +1660,7 @@ class Workflow(Writable, HookMixin, ProfileMixin, MetadataMixin):
 
     _DEFAULT_FILENAME = "workflow.yml"
 
-    def __init__(self, name: str, infer_dependencies: bool = True ,tracker_type: str ="full"):
+    def __init__(self, name: str, infer_dependencies: bool = True ,tracker_type: str =None):
         """
         :param name: name of the :py:class:`~Pegasus.api.workflow.Workflow`
         :type name: str
@@ -2443,8 +2448,8 @@ class Workflow(Writable, HookMixin, ProfileMixin, MetadataMixin):
         elif self.tracker_type == "auto":
             tracker.auto_logger()
         else:
-            print("No tracking option choosen using the full tracking")
-            tracker.full_tracker()
+            print("No tracking option choosen")
+            pass
         # ensure user is aware that SiteCatalog and TransformationCatalog are
         # not inherited by SubWorkflows when those two catalogs are embedded
         # into the root workflow
