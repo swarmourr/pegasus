@@ -176,34 +176,39 @@ class PegasusTracker():
             files_to_track=[]
             wf_jobs=len(list(self.wf.jobs.items()))
             mlflow_job_file={}
+            
             for job_name,job_object in list(self.wf.jobs.items()):
                 mlflow_files_type=[]
                 file_index=0
-                for file in  job_object.get_inputs():
-                    if ("input_track" in file.__dict__['metadata']) or (full==True):
-                        files_to_track.append({file.lfn : {"job":job_name, "next_index":job_index+1,"current_index":job_index}})
-                        if not full:
-                            del file.__dict__['metadata']["input_track"] 
-                    if ("mlflow" in  file.__dict__['metadata'] and job_name not in self.mlflow_runs and self.mlflow==True) or  (full==True):
-                        if full:
-                            file.__dict__['metadata']['mlflow']="auto"
-                        if "auto" in file.__dict__['metadata']['mlflow']:
-                            if self.PARENT_MLFLOW_ID==None:
-                                self.PARENT_MLFLOW_ID=self.MLflowConfiguerParent()
-                            self.MLflowConfiguer(file.__dict__['metadata']['mlflow'],job_name,run_parent_id=self.PARENT_MLFLOW_ID)
-                        else:
-                            mlflow_files_type.append({file.lfn :literal_eval(file.__dict__['metadata']['mlflow'])["FILE_TYPE"]})
-                            if file_index==len(list(job_object.get_inputs())):
-                                self.MLflowConfiguer(file.__dict__['metadata']['mlflow'],job_name,mlflow_files_type)
+                if "tracker_data_job" in job_name:
+                    pass
+                else:
+                    for file in  job_object.get_inputs():
+                        if ("input_track" in file.__dict__['metadata']) or (full==True):
+                            files_to_track.append({file.lfn : {"job":job_name, "next_index":job_index+1,"current_index":job_index}})
+                            if not full:
+                                del file.__dict__['metadata']["input_track"] 
+                        if ("mlflow" in  file.__dict__['metadata'] and job_name not in self.mlflow_runs and self.mlflow==True ) or  (full==True):
+                            if full:
+                                file.__dict__['metadata']['mlflow']="auto"
+                            if "auto" in file.__dict__['metadata']['mlflow']:
+                                if self.PARENT_MLFLOW_ID==None:
+                                    self.PARENT_MLFLOW_ID=self.MLflowConfiguerParent()
+                                self.MLflowConfiguer(file.__dict__['metadata']['mlflow'],job_name,run_parent_id=self.PARENT_MLFLOW_ID)
                             else:
-                                self.MLflowConfiguer(file.__dict__['metadata']['mlflow'],job_name)
+                                mlflow_files_type.append({file.lfn :literal_eval(file.__dict__['metadata']['mlflow'])["FILE_TYPE"]})
+                                if file_index==len(list(job_object.get_inputs())):
+                                    self.MLflowConfiguer(file.__dict__['metadata']['mlflow'],job_name,mlflow_files_type)
+                                else:
+                                    self.MLflowConfiguer(file.__dict__['metadata']['mlflow'],job_name)
 
-                        #mlflow_jobs[job_name]=file.__dict__['metadata']['mlflow']
-                        self.mlflow_runs.add(job_name) 
-                    file_index=file_index+1
-                job_index=job_index+1
-                wf_jobs=wf_jobs+1
-                mlflow_job_file[job_name]=mlflow_files_type
+                            #mlflow_jobs[job_name]=file.__dict__['metadata']['mlflow']
+                            self.mlflow_runs.add(job_name) 
+                        file_index=file_index+1
+                    job_index=job_index+1
+                    wf_jobs=wf_jobs+1
+                    mlflow_job_file[job_name]=mlflow_files_type
+
             for rc_name, rc_object in  list(self.rc.entries.items()):
                 lfn=rc_object.__dict__["lfn"]
                 key_exists = any(lfn in d for d in files_to_track)
@@ -275,33 +280,34 @@ class PegasusTracker():
         for job_name,job_object in list(self.wf.jobs.items()):
             file_index=1
             mlflow_files_type=[]
+            if "tracker_data_job" in job_name:
+                pass
+            else:
+                for file in  job_object.get_outputs():
+                    if ("output_track" in file.__dict__['metadata']) or (full==True):
+                        files_to_track_output.append({file.lfn : {"job":job_name, "next_index":job_index+1,"current_index":job_index,"pfn":os.path.join(self.local_storage_dir,file.lfn)}})
+                        if not full:
+                            del file.__dict__['metadata']["output_track"]
 
-            for file in  job_object.get_outputs():
-                if ("output_track" in file.__dict__['metadata']) or (full==True):
-                    files_to_track_output.append({file.lfn : {"job":job_name, "next_index":job_index+1,"current_index":job_index,"pfn":os.path.join(self.local_storage_dir,file.lfn)}})
-                    if not full:
-                        del file.__dict__['metadata']["output_track"]
-
-                if ("mlflow" in  file.__dict__['metadata'] and job_name not in self.mlflow_runs and self.mlflow==True) or (full==True):
-                        if full:
-                            file.__dict__['metadata']['mlflow']="auto"
-                        
-                        if "auto" in file.__dict__['metadata']['mlflow']:
-                            if self.PARENT_MLFLOW_ID==None:
-                                self.PARENT_MLFLOW_ID=self.MLflowConfiguerParent()
-                            self.MLflowConfiguer(file.__dict__['metadata']['mlflow'],job_name,run_parent_id=self.PARENT_MLFLOW_ID)
-                        else:
-                            mlflow_files_type.append({file.lfn :literal_eval(file.__dict__['metadata']['mlflow'])["FILE_TYPE"]})
-                            if file_index==len(list(job_object.get_inputs())):
-                                self.MLflowConfiguer(file.__dict__['metadata']['mlflow'],job_name,mlflow_files_type)
+                    if ("mlflow" in  file.__dict__['metadata'] and job_name not in self.mlflow_runs and self.mlflow==True) or (full==True):
+                            if full:
+                                file.__dict__['metadata']['mlflow']="auto"
+                            if "auto" in file.__dict__['metadata']['mlflow']:
+                                if self.PARENT_MLFLOW_ID==None:
+                                    self.PARENT_MLFLOW_ID=self.MLflowConfiguerParent()
+                                self.MLflowConfiguer(file.__dict__['metadata']['mlflow'],job_name,run_parent_id=self.PARENT_MLFLOW_ID)
                             else:
-                                self.MLflowConfiguer(file.__dict__['metadata']['mlflow'],job_name)
-                                locals()[f"tracker_data_job_output_{job_name}"].add_env(MLFLOW_JOB_NAME= job_name,MLFLOW_EXPERIMENT_NAME=self.mlflow_jobs_run_id[job_name]["MLFLOW_EXPERIMENT_NAME"],MLFLOW_TRACKING_URI=self.config.get('MLflow', 'tracking_uri'),**self.MLFLOW_CREDENTIALS,ENABLE_MLFLOW=True,MLFLOW_RUN=[key for key in self.mlflow_jobs_run_id[job_name] if key != "MLFLOW_EXPERIMENT_NAME"][0],MLFLOW_RUN_ID=[self.mlflow_jobs_run_id[job_name][key] for key in self.mlflow_jobs_run_id[job_name] if key != "MLFLOW_EXPERIMENT_NAME"][0],FILE_TYPE=str(mlflow_job_file[job_name]))
+                                mlflow_files_type.append({file.lfn :literal_eval(file.__dict__['metadata']['mlflow'])["FILE_TYPE"]})
+                                if file_index==len(list(job_object.get_inputs())):
+                                    self.MLflowConfiguer(file.__dict__['metadata']['mlflow'],job_name,mlflow_files_type)
+                                else:
+                                    self.MLflowConfiguer(file.__dict__['metadata']['mlflow'],job_name)
+                                    locals()[f"tracker_data_job_output_{job_name}"].add_env(MLFLOW_JOB_NAME= job_name,MLFLOW_EXPERIMENT_NAME=self.mlflow_jobs_run_id[job_name]["MLFLOW_EXPERIMENT_NAME"],MLFLOW_TRACKING_URI=self.config.get('MLflow', 'tracking_uri'),**self.MLFLOW_CREDENTIALS,ENABLE_MLFLOW=True,MLFLOW_RUN=[key for key in self.mlflow_jobs_run_id[job_name] if key != "MLFLOW_EXPERIMENT_NAME"][0],MLFLOW_RUN_ID=[self.mlflow_jobs_run_id[job_name][key] for key in self.mlflow_jobs_run_id[job_name] if key != "MLFLOW_EXPERIMENT_NAME"][0],FILE_TYPE=str(mlflow_job_file[job_name]))
 
-                        self.mlflow_runs.add(job_name) 
-                file_index=file_index+1
-                mlflow_job_file[job_name]=mlflow_files_type
-            job_index=job_index+1
+                            self.mlflow_runs.add(job_name) 
+                    file_index=file_index+1
+                    mlflow_job_file[job_name]=mlflow_files_type
+                job_index=job_index+1
 
         grouped_data = {}
         for data in files_to_track_output:
@@ -457,6 +463,14 @@ class PegasusTracker():
             
             return self.wf
 
+    def default_tracker(self):
+            self.wf=self.track_input(full=False)
+            self.wf=self.track_output(full=False)
+            self.wf=self.track_wf(full=False)
+            self.wf=self.track_transformations(full=False)
+            self.wf=self.build_metadata()
+            
+            return self.wf
 
     def auto_logger(self):
         job_index=0
@@ -2448,8 +2462,8 @@ class Workflow(Writable, HookMixin, ProfileMixin, MetadataMixin):
         elif self.tracker_type == "auto":
             tracker.auto_logger()
         else:
-            print("No tracking option choosen")
-            pass
+            print("No tracking option chosen ==> Analyzing the workflows for potential Metadta")
+            tracker.default_tracker()
         # ensure user is aware that SiteCatalog and TransformationCatalog are
         # not inherited by SubWorkflows when those two catalogs are embedded
         # into the root workflow

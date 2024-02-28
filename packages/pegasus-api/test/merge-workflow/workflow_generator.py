@@ -42,7 +42,7 @@ class MergeWorkflow:
         self.wf.add_replica_catalog(self.rc)
         self.wf.write()
         return
-
+        
     # --- Configuration (Pegasus Properties) ----------------------------------
     def create_pegasus_properties(self):
         self.props = Properties()
