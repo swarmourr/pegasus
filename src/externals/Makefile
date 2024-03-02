@@ -36,6 +36,8 @@ PACKAGES+=requests
 PACKAGES+=s3transfer
 PACKAGES+=six
 PACKAGES+=urllib3
+PACKAGES+=google_api_python_client
+PACKAGES+=google_auth_oauthlib
 
 
 
@@ -87,6 +89,8 @@ $(LIBDIR)/requests: requests-2.23.0.tar.gz
 $(LIBDIR)/s3transfer: s3transfer-0.3.3.tar.gz
 $(LIBDIR)/six: six-1.14.0.tar.gz
 $(LIBDIR)/urllib3: urllib3-1.25.8.tar.gz
+$(LIBDIR)/google_api_python_client: google-api-python-client-2.120.0.tar.gz
+$(LIBDIR)/google_auth_oauthlib: google-auth-oauthlib-0.4.6.tar.gz
 
 clean:
 	rm -rf $(EXTDIR)
