@@ -6,6 +6,7 @@ from setuptools import find_packages, setup
 src_dir = os.path.dirname(__file__)
 home_dir = os.path.abspath(os.path.join(src_dir, "../.."))
 
+
 install_requires = [
     "six>=1.9.0",
     "boto3>1.12",
