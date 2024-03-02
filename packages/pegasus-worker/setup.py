@@ -10,6 +10,17 @@ install_requires = [
     "six>=1.9.0",
     "boto3>1.12",
     "globus-sdk>=3.5.0;python_version>='3.6'",
+    "google_api_python_client==2.120.0",
+    "google_auth_oauthlib==0.4.6",
+    "mlflow==2.11.0",
+    "numpy==1.23.5",
+    "pandas==1.5.1",
+    "protobuf==3.20.0",
+    "psutil==5.9.8",
+    "PyGithub==2.2.0",
+    "PyYAML==6.0",
+    "PyYAML==6.0.1",
+    "Requests==2.31.0"
 ]
 
 

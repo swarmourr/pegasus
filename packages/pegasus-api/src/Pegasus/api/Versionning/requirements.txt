@@ -1,0 +1,17 @@
+google_api_python_client==2.120.0
+google_auth_oauthlib==0.4.6
+mlflow==2.11.0
+numpy==1.23.5
+pandas==1.5.1
+Pegasus==0.1.3
+pegasus_wms==5.0.7.dev0
+pegasus_wms.api==5.0.7.dev0
+pegasus_wms.common==5.0.7
+pegasus_wms.dax==5.0.7
+pegasus_wms.worker==5.0.7
+protobuf==3.20.0
+psutil==5.9.8
+PyGithub==2.2.0
+PyYAML==6.0
+PyYAML==6.0.1
+Requests==2.31.0
