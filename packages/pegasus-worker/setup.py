@@ -19,7 +19,6 @@ install_requires = [
     "protobuf==3.20.0",
     "psutil==5.9.8",
     "PyGithub==2.2.0",
-    "PyYAML==6.0",
     "PyYAML==6.0.1",
     "Requests==2.31.0"
 ]

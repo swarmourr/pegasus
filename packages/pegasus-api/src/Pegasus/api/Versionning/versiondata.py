@@ -21,22 +21,24 @@ import psutil
 try:
     from mlflow.data import Dataset
     from mlflow.data.dataset import Dataset, DatasetEntity
+    class GenericFileDataset(Dataset):
+        def __init__(self, file_path):
+            self.file_path = file_path
+
+        def _to_mlflow_entity(self):
+            return DatasetEntity(
+                name=self.file_path,
+                digest="",
+                source_type="local",
+                source=self.file_path,
+                schema=self.file_path,
+                profile="local",
+            )
 except:
+    print("Datsets not suported in this python version")
     pass
 
-class GenericFileDataset(Dataset):
-    def __init__(self, file_path):
-        self.file_path = file_path
 
-    def _to_mlflow_entity(self):
-         return DatasetEntity(
-            name=self.file_path,
-            digest="",
-            source_type="local",
-            source=self.file_path,
-            schema=self.file_path,
-            profile="local",
-        )
     
 
 class DataVersioning:
@@ -202,8 +204,12 @@ class DataVersioning:
             for data in metadata_file:
                 for key, value in data.items():
                     table_dict[key].append(value)
+            
             with mlflow.start_run(experiment_id=self.experiment, run_id=self.run_id):
-                mlflow.log_table(table_dict,artifact_file=f"job_{type}_files_metadata.json")
+                try:
+                    mlflow.log_table(table_dict,artifact_file=f"job_{type}_files_metadata.json")
+                except:
+                    print("mflow old version==> tracking metadata only in center node")
                 mlflow.set_tag(f"wf_UUID",os.getenv('PEGASUS_WF_UUID'))
 
         metadata.setdefault("versions", []).extend(version_data_list)
