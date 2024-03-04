@@ -97,7 +97,7 @@ class GitHubFilePusher:
         file_path = self.local_file_path
 
         # Check if the file exists in the repository
-        check_file_url = f"{api_base_url}/contents/{file_path}?ref={self.branch_name}"
+        check_file_url = f"{api_base_url}/contents/{file_path}"
         response = requests.get(check_file_url, headers=headers)
 
         if response.status_code == 200:
