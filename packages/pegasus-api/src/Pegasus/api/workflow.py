@@ -615,7 +615,7 @@ class PegasusTracker():
                     else:
                         run_id= self.mlflow_jobs_run_id[job_name][job_name]
                     formatted_pairs = " --env ".join([f"{key.upper()}={value}" for key, value in self.MLFLOW_CREDENTIALS.items()])
-                    arguments_container["arguments"]=f"--env ENABLE_MLFLOW=True --env MLFLOW_EXPERIMENT_NAME={self.wf.__dict__['name']} --env MLFLOW_RUN=$PEGASUS_DAG_JOB_ID --env MLFLOW_TRACKING_URI={self.config.get('MLflow', 'tracking_uri')} --env {formatted_pairs} --env MLFLOW_CONFIG={config} --env FILE_TYPE=None --env DATA_TRACKER_CONFIG=pegasus_data_config.conf "
+                    arguments_container["arguments"]=f"--env ENABLE_MLFLOW=True --env MLFLOW_EXPERIMENT_NAME={self.wf.__dict__['name']} --env MLFLOW_RUN=$PEGASUS_DAG_JOB_ID --env MLFLOW_TRACKING_URI={self.config.get('MLflow', 'tracking_uri')} --env {formatted_pairs} --env MLFLOW_CONFIG={config} --env FILE_TYPE=None --env DATA_TRACKER_CONFIG=pegasus_data_config.conf"
                     self.tc.__dict__["containers"][self.container.name]=Container(**arguments_container)
                     self.container_updated=True
                     self.wf.get_job(job_name).add_env(MLFLOW_RUN_ID=run_id)
