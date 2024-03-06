@@ -63,6 +63,9 @@ class PegasusTracker():
 
         try:
             self.config.read(DEFAULT_CONFIG_FILE)
+            print("hadi config")
+            print(DEFAULT_CONFIG_FILE)
+            print(self.config.read(DEFAULT_CONFIG_FILE))
         except:
             print("No configuration file found please use pegasus-data to add necessairy configuration if you want data tracking")
         
