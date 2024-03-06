@@ -28,8 +28,12 @@ from Pegasus.client._client import from_env
 
 
 PEGASUS_VERSION = "5.0.4"
-DEFAULT_CONFIG_DIR = os.path.expanduser("~/.pegasus/")
-DEFAULT_CONFIG_FILE=DEFAULT_CONFIG_DIR+"pegasus_data_config.conf"
+if 'DATA_TRACKER_CONFIG' in os.environ:
+    if os.environ['DATA_TRACKER_CONFIG']:
+        DEFAULT_CONFIG_FILE=os.environ.get("DATA_TRACKER_CONFIG")
+else:
+    DEFAULT_CONFIG_DIR = os.path.expanduser("~/.pegasus/")
+    DEFAULT_CONFIG_FILE=DEFAULT_CONFIG_DIR+"pegasus_data_config.conf"
 METADATA_FILE=  os.path.join(DEFAULT_CONFIG_DIR, "Metadata.yaml")
 
 print(DEFAULT_CONFIG_FILE)
@@ -611,7 +615,7 @@ class PegasusTracker():
                     else:
                         run_id= self.mlflow_jobs_run_id[job_name][job_name]
                     formatted_pairs = " --env ".join([f"{key.upper()}={value}" for key, value in self.MLFLOW_CREDENTIALS.items()])
-                    arguments_container["arguments"]=f"--env ENABLE_MLFLOW=True --env MLFLOW_EXPERIMENT_NAME={self.wf.__dict__['name']} --env MLFLOW_RUN=$PEGASUS_DAG_JOB_ID --env MLFLOW_TRACKING_URI={self.config.get('MLflow', 'tracking_uri')} --env {formatted_pairs} --env MLFLOW_CONFIG={config} --env FILE_TYPE=None "
+                    arguments_container["arguments"]=f"--env ENABLE_MLFLOW=True --env MLFLOW_EXPERIMENT_NAME={self.wf.__dict__['name']} --env MLFLOW_RUN=$PEGASUS_DAG_JOB_ID --env MLFLOW_TRACKING_URI={self.config.get('MLflow', 'tracking_uri')} --env {formatted_pairs} --env MLFLOW_CONFIG={config} --env FILE_TYPE=None --env DATA_TRACKER_CONFIG=pegasus_data_config.conf "
                     self.tc.__dict__["containers"][self.container.name]=Container(**arguments_container)
                     self.container_updated=True
                     self.wf.get_job(job_name).add_env(MLFLOW_RUN_ID=run_id)
