@@ -13,7 +13,7 @@ install_requires = [
     "globus-sdk>=3.5.0;python_version>='3.6'",
     "google_api_python_client==2.120.0",
     "google_auth_oauthlib==0.4.6",
-    "mlflow==2.11.0",
+    "mlflow",
     "numpy==1.23.5",
     "pandas==1.5.1",
     "protobuf==3.20.0",
