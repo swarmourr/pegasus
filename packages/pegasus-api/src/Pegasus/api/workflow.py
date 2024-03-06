@@ -31,6 +31,7 @@ PEGASUS_VERSION = "5.0.4"
 if 'DATA_TRACKER_CONFIG' in os.environ:
     if os.environ['DATA_TRACKER_CONFIG']:
         DEFAULT_CONFIG_FILE=os.environ.get("DATA_TRACKER_CONFIG")
+        DEFAULT_CONFIG_DIR = os.path.expanduser("~/.pegasus/")
 else:
     DEFAULT_CONFIG_DIR = os.path.expanduser("~/.pegasus/")
     DEFAULT_CONFIG_FILE=DEFAULT_CONFIG_DIR+"pegasus_data_config.conf"
