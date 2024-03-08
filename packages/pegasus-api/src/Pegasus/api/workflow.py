@@ -399,38 +399,61 @@ class PegasusTracker():
 
 
     def track_wf(self,full=False):
+        localStorage_path=""
         if ("wf_track" in self.wf.__dict__['metadata'].keys()) or (full==True):
             if self.sc is None:
                 pass
             else:
                 self.wf.add_site_catalog(self.sc)
+                if "/srv" not in str(Path.cwd()):
+                    local_storage_found = False
+                    for key, value in self.sc.__dict__["sites"].items():
+                        if key == "local":
+                            directories = [dir.__dict__ for dir in value.__dict__["directories"]]
+                            print(directories)
+                            for directory in directories:
+                                if directory['directory_type'] == 'localStorage':
+                                    localStorage_path = directory['path']
+                                    print(localStorage_path)
+                                    local_storage_found = True
+                                    break  # Exit the inner loop
+                                elif directory['directory_type'] == 'sharedScratch':
+                                    sharedScratch_path = directory['path']
+                                    print(sharedScratch_path)
+
+                            if local_storage_found:
+                                break  # Exit the outer loop
+                else:
+                    print("not Using default file path in container")
+                    localStorage_path=str(Path.cwd())
             #print(self.rc.__dict__)
             #self.wf.add_replica_catalog(self.rc)
             #self.wf.add_transformation_catalog(self.tc)
             if self.rc==None:
                 self.rc = ReplicaCatalog()
-            self.rc.add_replica("local", "wf", os.path.join(self.wf_dir, self.dagfile))
-            wf_name_track=File("wf")
-            output_wf=File(f"pegasus-data/metadata_{wf_name_track}.yaml")
-            self.metadata_version_outputs.append(output_wf)
-            str_bucket=""
-            str_gdrive=""
-            job_args=f"-files {wf_name_track} -data_dir pegasus-data -metadata_format yaml -o pegasus-data/metadata_{wf_name_track} -file_type workflow -pfn {os.path.join(self.wf_dir, self.dagfile)}"
-            locals()[f"tracker_wf_{self.wf.__dict__['name']}"]=(Job("data_tracker", _id=f"tracker_wf_{self.wf.__dict__['name']}", node_label=f"tracker_wf_{self.wf.__dict__['name']}")
-                    #.add_args(f"-files {wf_name_track} -data_dir pegasus-data -metadata_format yaml -bucket -bcredentials  bucket -gdrive -remote_id {self.remote_id}  -o pegasus-data/metadata_{wf_name_track} -gcredentials {self.credentials} -file_type workflow -pfn {os.path.join(self.wf_dir, self.dagfile)}")
-                    .add_inputs(wf_name_track)
-                    .add_outputs(output_wf)
-                    .add_env(ENABLE_MLFLOW=False)    
-                )
-            if self.bucket_credentials is not None:
-               str_bucket= f"-bucket -bcredentials {self.bucket_credentials}"
-               locals()[f"tracker_wf_{self.wf.__dict__['name']}"].add_inputs(self.bucket_credentials)
-            if self.credentials is not None:
-                str_gdrive= f"-gdrive -remote_id {self.remote_id} -gcredentials {self.credentials}"
-                locals()[f"tracker_wf_{self.wf.__dict__['name']}"].add_inputs(self.credentials)
-                
-            locals()[f"tracker_wf_{self.wf.__dict__['name']}"].add_args(f"{job_args} {str_bucket} {str_gdrive}".replace("  ", " ").strip())
-            self.wf.add_jobs(locals()[f"tracker_wf_{self.wf.__dict__['name']}"])
+            if localStorage_path != "":
+                self.rc.add_replica("local", "wf", os.path.join(localStorage_path, self.dagfile))
+                wf_name_track=File("wf")
+                output_wf=File(f"pegasus-data/metadata_{wf_name_track}.yaml")
+                self.metadata_version_outputs.append(output_wf)
+                str_bucket=""
+                str_gdrive=""
+                job_args=f"-files {wf_name_track} -data_dir pegasus-data -metadata_format yaml -o pegasus-data/metadata_{wf_name_track} -file_type workflow -pfn {os.path.join(self.wf_dir, self.dagfile)}"
+                locals()[f"tracker_wf_{self.wf.__dict__['name']}"]=(Job("data_tracker", _id=f"tracker_wf_{self.wf.__dict__['name']}", node_label=f"tracker_wf_{self.wf.__dict__['name']}")
+                        #.add_args(f"-files {wf_name_track} -data_dir pegasus-data -metadata_format yaml -bucket -bcredentials  bucket -gdrive -remote_id {self.remote_id}  -o pegasus-data/metadata_{wf_name_track} -gcredentials {self.credentials} -file_type workflow -pfn {os.path.join(self.wf_dir, self.dagfile)}")
+                        .add_inputs(wf_name_track)
+                        .add_outputs(output_wf)
+                        .add_env(ENABLE_MLFLOW=False)    
+                    )
+                if self.bucket_credentials is not None:
+                    str_bucket= f"-bucket -bcredentials {self.bucket_credentials}"
+                    locals()[f"tracker_wf_{self.wf.__dict__['name']}"].add_inputs(self.bucket_credentials)
+                if self.credentials is not None:
+                    str_gdrive= f"-gdrive -remote_id {self.remote_id} -gcredentials {self.credentials}"
+                    locals()[f"tracker_wf_{self.wf.__dict__['name']}"].add_inputs(self.credentials)
+                    
+                locals()[f"tracker_wf_{self.wf.__dict__['name']}"].add_args(f"{job_args} {str_bucket} {str_gdrive}".replace("  ", " ").strip())
+                self.wf.add_jobs(locals()[f"tracker_wf_{self.wf.__dict__['name']}"])
         return self.wf
     
     def build_metadata(self):

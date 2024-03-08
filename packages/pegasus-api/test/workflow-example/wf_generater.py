@@ -102,6 +102,26 @@ class FederatedLearningWorkflow():
 
         
         self.sc.add_sites(local, exec_site)
+        if "/srv" not in str(Path.cwd()):
+            local_storage_found = False
+            for key, value in self.sc.__dict__["sites"].items():
+                if key == "local":
+                    directories = [dir.__dict__ for dir in value.__dict__["directories"]]
+                    print(directories)
+                    for directory in directories:
+                        if directory['directory_type'] == 'localStorage':
+                            print("hanana ")
+                            localStorage_path = directory['path']
+                            print(localStorage_path)
+                            local_storage_found = True
+                            break  # Exit the inner loop
+                        elif directory['directory_type'] == 'sharedScratch':
+                            sharedScratch_path = directory['path']
+                            print(sharedScratch_path)
+
+                    if local_storage_found:
+                        break  # Exit the outer loop
+        sys.exit()
         return
 
 
