@@ -62,6 +62,7 @@ class FederatedLearningWorkflow():
     def write(self):
         if not self.sc is None:
             self.wf.add_site_catalog(self.sc)
+            #
             #self.sc.write()
         #self.wf.add_site_catalog(self.sc)
         self.props.write()
@@ -70,6 +71,8 @@ class FederatedLearningWorkflow():
         self.wf.add_transformation_catalog(self.tc)
         self.wf.add_replica_catalog(self.rc)
         self.wf.write()
+        print("haihiya write")
+        print(self.wf.__dict__["site_catalog"].__dict__)
         return
 
 
@@ -102,7 +105,7 @@ class FederatedLearningWorkflow():
 
         
         self.sc.add_sites(local, exec_site)
-        if "/srv" not in str(Path.cwd()):
+        """if "/srv" not in str(Path.cwd()):
             local_storage_found = False
             for key, value in self.sc.__dict__["sites"].items():
                 if key == "local":
@@ -120,8 +123,7 @@ class FederatedLearningWorkflow():
                             print(sharedScratch_path)
 
                     if local_storage_found:
-                        break  # Exit the outer loop
-        sys.exit()
+                        break  # Exit the outer """
         return
 
 
