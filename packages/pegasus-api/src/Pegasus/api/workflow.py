@@ -410,7 +410,7 @@ class PegasusTracker():
             if self.rc==None:
                 self.rc = ReplicaCatalog()
 
-            if "/srv" not in str(Path.cwd()):
+            if "/srv" in str(Path.cwd()):
                     local_storage_found = False
                     for key, value in self.wf.__dict__["site_catalog"].__dict__["sites"].items():
                         if key == "local":
