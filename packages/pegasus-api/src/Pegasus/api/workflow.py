@@ -400,6 +400,7 @@ class PegasusTracker():
 
     def track_wf(self,full=False):
         localStorage_path=""
+        print(f"hadi path    {str(Path.cwd())}")
         if ("wf_track" in self.wf.__dict__['metadata'].keys()) or (full==True):
             
             if self.sc is None:
