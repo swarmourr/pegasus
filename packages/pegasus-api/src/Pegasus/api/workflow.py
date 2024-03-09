@@ -411,6 +411,7 @@ class PegasusTracker():
                 self.rc = ReplicaCatalog()
 
             if "/srv" in str(Path.cwd()):
+                    print(f"srv found  {str(Path.cwd())}")
                     local_storage_found = False
                     for key, value in self.wf.__dict__["site_catalog"].__dict__["sites"].items():
                         if key == "local":
@@ -442,7 +443,7 @@ class PegasusTracker():
                 self.metadata_version_outputs.append(output_wf)
                 str_bucket=""
                 str_gdrive=""
-                job_args=f"-files {wf_name_track} -data_dir pegasus-data -metadata_format yaml -o pegasus-data/metadata_{wf_name_track} -file_type workflow -pfn {os.path.join(self.wf_dir, self.dagfile)}"
+                job_args=f"-files {wf_name_track} -data_dir pegasus-data -metadata_format yaml -o pegasus-data/metadata_{wf_name_track} -file_type workflow -pfn {os.path.join(localStorage_path, self.dagfile)}"
                 locals()[f"tracker_wf_{self.wf.__dict__['name']}"]=(Job("data_tracker", _id=f"tracker_wf_{self.wf.__dict__['name']}", node_label=f"tracker_wf_{self.wf.__dict__['name']}")
                         #.add_args(f"-files {wf_name_track} -data_dir pegasus-data -metadata_format yaml -bucket -bcredentials  bucket -gdrive -remote_id {self.remote_id}  -o pegasus-data/metadata_{wf_name_track} -gcredentials {self.credentials} -file_type workflow -pfn {os.path.join(self.wf_dir, self.dagfile)}")
                         .add_inputs(wf_name_track)
