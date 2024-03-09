@@ -403,7 +403,6 @@ class PegasusTracker():
         if ("wf_track" in self.wf.__dict__['metadata'].keys()) or (full==True):
             
             if self.sc is None:
-                print("hanta si sc")
                 pass
             else:
                 self.wf.add_site_catalog(self.sc)
@@ -413,7 +412,7 @@ class PegasusTracker():
 
             if "/srv" not in str(Path.cwd()):
                     local_storage_found = False
-                    for key, value in self.sc.__dict__["sites"].items():
+                    for key, value in self.wf.__dict__["site_catalog"].__dict__["sites"].items():
                         if key == "local":
                             directories = [dir.__dict__ for dir in value.__dict__["directories"]]
                             print(directories)
