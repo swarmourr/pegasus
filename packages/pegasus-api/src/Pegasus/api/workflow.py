@@ -414,6 +414,8 @@ class PegasusTracker():
                     print(f"srv found  {str(Path.cwd())}")
                     local_storage_found = False
                     for key, value in self.wf.__dict__["site_catalog"].__dict__["sites"].items():
+                        directories = [dir.__dict__ for dir in value.__dict__["directories"]]
+                        print(directories)                          
                         if key == "local":
                             directories = [dir.__dict__ for dir in value.__dict__["directories"]]
                             print(directories)
