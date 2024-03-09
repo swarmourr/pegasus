@@ -402,6 +402,7 @@ class PegasusTracker():
         localStorage_path=""
         if ("wf_track" in self.wf.__dict__['metadata'].keys()) or (full==True):
             if self.sc is None:
+                print("hanta si sc")
                 pass
             else:
                 self.wf.add_site_catalog(self.sc)
