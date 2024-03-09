@@ -401,12 +401,17 @@ class PegasusTracker():
     def track_wf(self,full=False):
         localStorage_path=""
         if ("wf_track" in self.wf.__dict__['metadata'].keys()) or (full==True):
+            
             if self.sc is None:
                 print("hanta si sc")
                 pass
             else:
                 self.wf.add_site_catalog(self.sc)
-                if "/srv" not in str(Path.cwd()):
+
+            if self.rc==None:
+                self.rc = ReplicaCatalog()
+
+            if "/srv" not in str(Path.cwd()):
                     local_storage_found = False
                     for key, value in self.sc.__dict__["sites"].items():
                         if key == "local":
@@ -424,14 +429,13 @@ class PegasusTracker():
 
                             if local_storage_found:
                                 break  # Exit the outer loop
-                else:
+            else:
                     print("not Using default file path in container")
                     localStorage_path=str(Path.cwd())
             #print(self.rc.__dict__)
             #self.wf.add_replica_catalog(self.rc)
             #self.wf.add_transformation_catalog(self.tc)
-            if self.rc==None:
-                self.rc = ReplicaCatalog()
+            
             if localStorage_path != "":
                 self.rc.add_replica("local", "wf", os.path.join(localStorage_path, self.dagfile))
                 wf_name_track=File("wf")
