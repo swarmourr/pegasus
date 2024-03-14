@@ -210,6 +210,7 @@ class DataVersioning:
                     mlflow.log_table(table_dict,artifact_file=f"job_{type}_files_metadata.json")
                 except:
                     print("mflow old version==> tracking metadata only in center node")
+                    mlflow.set_tag(f"Metadata_tracking","old mlflow version ==> tracking central node")
                 mlflow.set_tag(f"wf_UUID",os.getenv('PEGASUS_WF_UUID'))
 
         metadata.setdefault("versions", []).extend(version_data_list)

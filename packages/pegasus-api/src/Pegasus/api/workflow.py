@@ -244,34 +244,35 @@ class PegasusTracker():
                     except:
                         pass
                 #job_name=file[list(file.keys())[0]]["job"]
-                metadata_input_files=File(f"pegasus-data/metadata_{job_name}_input.yaml")
-                self.metadata_version_outputs.append(metadata_input_files)
-                str_gdrive=""
-                str_bucket=""
-                job_args=f"-files {' '.join(list(current_files_tracker))} -data_dir pegasus-data -metadata_format yaml -o pegasus-data/metadata_{job_name}_input -file_type inputs -pfn {' '.join(list(current_files_pfn))}"
-                print("creating jobs")
-                locals()[f"tracker_data_job_input_{job_name}"]=(Job(transformation="data_tracker", _id=f"tracker_data_job_{job_name}_input", node_label=f"tracker_data_job_{job_name}_input")
-                        .add_inputs(*[File(x) for x in list(current_files_tracker)])
-                        .add_outputs(metadata_input_files)
-                        .add_pegasus_profile(label=job_name)
-                    )
-                #.add_args(f"-files {' '.join(list(current_files_tracker))} -data_dir pegasus-data -bucket -bcredentials bucket -metadata_format yaml   -gdrive -remote_id {self.remote_id}  -o pegasus-data/metadata_{job_name}_input -gcredentials {self.credentials} -file_type inputs -pfn {' '.join(list(current_files_pfn))}")
-                print(f"tracker_data_job_input_{job_name} created ")
-                if self.bucket_credentials is not None:
-                    str_bucket= f"-bucket -bcredentials {self.bucket_credentials}"
-                    locals()[f"tracker_data_job_input_{job_name}"].add_inputs(self.bucket_credentials)
-                if self.credentials is not None:
-                    str_gdrive= f"-gdrive -remote_id {self.remote_id} -gcredentials {self.credentials}"
-                    locals()[f"tracker_data_job_input_{job_name}"].add_inputs(self.credentials)
-                locals()[f"tracker_data_job_input_{job_name}"].add_args(f"{job_args} {str_bucket} {str_gdrive}".replace("  ", " ").strip())
-                if job_name  in self.mlflow_jobs_run_id :
-                    if self.mlflow_jobs_run_id[job_name].get("config")=="custom":
-                        locals()[f"tracker_data_job_input_{job_name}"].add_env(MLFLOW_JOB_NAME= job_name, MLFLOW_EXPERIMENT_NAME=self.mlflow_jobs_run_id[job_name]["MLFLOW_EXPERIMENT_NAME"],MLFLOW_TRACKING_URI=self.config.get('MLflow', 'tracking_uri'),**self.MLFLOW_CREDENTIALS,ENABLE_MLFLOW=True, MLFLOW_RUN=[key for key in self.mlflow_jobs_run_id[job_name] if key != "MLFLOW_EXPERIMENT_NAME"][0],MLFLOW_RUN_ID=[self.mlflow_jobs_run_id[job_name][key] for key in self.mlflow_jobs_run_id[job_name] if key != "MLFLOW_EXPERIMENT_NAME"][0],FILE_TYPE=str(mlflow_job_file[job_name]))
-                    else:
-                        locals()[f"tracker_data_job_input_{job_name}"].add_env(MLFLOW_RUN_ID=[self.mlflow_jobs_run_id[job_name][key] for key in self.mlflow_jobs_run_id[job_name] if key != "MLFLOW_EXPERIMENT_NAME"][0])
-                self.wf.get_job(job_name).add_pegasus_profile(label=job_name)
-                self.wf.add_jobs(locals()[f"tracker_data_job_input_{job_name}"])
-                self.wf.add_dependency(self.wf.get_job(job_name),children=[locals()[f"tracker_data_job_input_{job_name}"]])
+                if len(list(current_files_tracker))!=0:
+                    metadata_input_files=File(f"pegasus-data/metadata_{job_name}_input.yaml")
+                    self.metadata_version_outputs.append(metadata_input_files)
+                    str_gdrive=""
+                    str_bucket=""
+                    job_args=f"-files {' '.join(list(current_files_tracker))} -data_dir pegasus-data -metadata_format yaml -o pegasus-data/metadata_{job_name}_input -file_type inputs -pfn {' '.join(list(current_files_pfn))}"
+                    print("creating jobs")
+                    locals()[f"tracker_data_job_input_{job_name}"]=(Job(transformation="data_tracker", _id=f"tracker_data_job_{job_name}_input", node_label=f"tracker_data_job_{job_name}_input")
+                            .add_inputs(*[File(x) for x in list(current_files_tracker)])
+                            .add_outputs(metadata_input_files)
+                            .add_pegasus_profile(label=job_name)
+                        )
+                    #.add_args(f"-files {' '.join(list(current_files_tracker))} -data_dir pegasus-data -bucket -bcredentials bucket -metadata_format yaml   -gdrive -remote_id {self.remote_id}  -o pegasus-data/metadata_{job_name}_input -gcredentials {self.credentials} -file_type inputs -pfn {' '.join(list(current_files_pfn))}")
+                    print(f"tracker_data_job_input_{job_name} created ")
+                    if self.bucket_credentials is not None:
+                        str_bucket= f"-bucket -bcredentials {self.bucket_credentials}"
+                        locals()[f"tracker_data_job_input_{job_name}"].add_inputs(self.bucket_credentials)
+                    if self.credentials is not None:
+                        str_gdrive= f"-gdrive -remote_id {self.remote_id} -gcredentials {self.credentials}"
+                        locals()[f"tracker_data_job_input_{job_name}"].add_inputs(self.credentials)
+                    locals()[f"tracker_data_job_input_{job_name}"].add_args(f"{job_args} {str_bucket} {str_gdrive}".replace("  ", " ").strip())
+                    if job_name  in self.mlflow_jobs_run_id :
+                        if self.mlflow_jobs_run_id[job_name].get("config")=="custom":
+                            locals()[f"tracker_data_job_input_{job_name}"].add_env(MLFLOW_JOB_NAME= job_name, MLFLOW_EXPERIMENT_NAME=self.mlflow_jobs_run_id[job_name]["MLFLOW_EXPERIMENT_NAME"],MLFLOW_TRACKING_URI=self.config.get('MLflow', 'tracking_uri'),**self.MLFLOW_CREDENTIALS,ENABLE_MLFLOW=True, MLFLOW_RUN=[key for key in self.mlflow_jobs_run_id[job_name] if key != "MLFLOW_EXPERIMENT_NAME"][0],MLFLOW_RUN_ID=[self.mlflow_jobs_run_id[job_name][key] for key in self.mlflow_jobs_run_id[job_name] if key != "MLFLOW_EXPERIMENT_NAME"][0],FILE_TYPE=str(mlflow_job_file[job_name]))
+                        else:
+                            locals()[f"tracker_data_job_input_{job_name}"].add_env(MLFLOW_RUN_ID=[self.mlflow_jobs_run_id[job_name][key] for key in self.mlflow_jobs_run_id[job_name] if key != "MLFLOW_EXPERIMENT_NAME"][0])
+                    self.wf.get_job(job_name).add_pegasus_profile(label=job_name)
+                    self.wf.add_jobs(locals()[f"tracker_data_job_input_{job_name}"])
+                    self.wf.add_dependency(self.wf.get_job(job_name),children=[locals()[f"tracker_data_job_input_{job_name}"]])
             
             for file in files_to_track:
                 
