@@ -35,7 +35,7 @@ if 'DATA_TRACKER_CONFIG' in os.environ:
 else:
     DEFAULT_CONFIG_DIR = os.path.expanduser("~/.pegasus/")
     DEFAULT_CONFIG_FILE=DEFAULT_CONFIG_DIR+"pegasus_data_config.conf"
-METADATA_FILE=  os.path.join(DEFAULT_CONFIG_DIR, "Metadata.yaml")
+METADATA_FILE=  os.path.join(DEFAULT_CONFIG_DIR, "metadata.yaml")
 
 print(DEFAULT_CONFIG_FILE)
 __all__ = ["AbstractJob", "Job", "SubWorkflow", "Workflow"]
@@ -60,6 +60,7 @@ class PegasusTracker():
         self.pull=False
         self.config = configparser.ConfigParser()
         self.PARENT_MLFLOW_ID=None
+        self.copy=False
 
         try:
             self.config.read(DEFAULT_CONFIG_FILE)
@@ -100,6 +101,11 @@ class PegasusTracker():
             self.branch=self.config.get("git","branch")
             self.pull=self.config.getboolean("git","pull")
 
+        if self.config.has_section("metadata"):
+            self.copy=True
+            METADATA_FILE=self.config.get("metadata","path")
+        else:
+            self.copy=False
 
         self.metadata_version_outputs=[]
         self.wf=wf
@@ -486,7 +492,7 @@ class PegasusTracker():
         
 
             cp_job=Job("cp",_id="copy_file", node_label="copy_file")\
-                    .add_args(self.metadata_output_combiner, DEFAULT_CONFIG_DIR)\
+                    .add_args(self.metadata_output_combiner, METADATA_FILE.replace("metadata.yaml",""))\
                     .add_inputs(self.metadata_output_combiner)\
                     .add_profiles(Namespace.SELECTOR, key="execution.site", value="local")\
                     
