@@ -35,14 +35,12 @@ if 'DATA_TRACKER_CONFIG' in os.environ:
 else:
     DEFAULT_CONFIG_DIR = os.path.expanduser("~/.pegasus/")
     DEFAULT_CONFIG_FILE=DEFAULT_CONFIG_DIR+"pegasus_data_config.conf"
-METADATA_FILE=  os.path.join(DEFAULT_CONFIG_DIR, "metadata.yaml")
+#METADATA_FILE=  os.path.join(DEFAULT_CONFIG_DIR, "metadata.yaml")
 
 print(DEFAULT_CONFIG_FILE)
 __all__ = ["AbstractJob", "Job", "SubWorkflow", "Workflow"]
 
 log = logging.getLogger(__name__)
-
-
 
 
 class PegasusTracker():
@@ -103,7 +101,7 @@ class PegasusTracker():
 
         if self.config.has_section("metadata"):
             self.copy=True
-            METADATA_FILE=self.config.get("metadata","path")
+            self.METADATA_FILE=self.config.get("metadata","path")
         else:
             self.copy=False
 
@@ -492,7 +490,7 @@ class PegasusTracker():
         
 
             cp_job=Job("cp",_id="copy_file", node_label="copy_file")\
-                    .add_args(self.metadata_output_combiner, METADATA_FILE.replace("metadata.yaml",""))\
+                    .add_args(self.metadata_output_combiner, self.METADATA_FILE.replace("metadata.yaml",""))\
                     .add_inputs(self.metadata_output_combiner)\
                     .add_profiles(Namespace.SELECTOR, key="execution.site", value="local")\
                     
@@ -661,6 +659,7 @@ class PegasusTracker():
                     self.tc.__dict__["containers"][self.container.name]=Container(**arguments_container)
                     self.container_updated=True
                     self.wf.get_job(job_name).add_env(MLFLOW_RUN_ID=run_id)
+                    self.wf.get_job(job_name).add_env(DATA_TRACKER_CONFIG="pegasus_data_config.conf")
                     #self.mlflow_jobs_run_id[job_name]=run_id
                 else:
                     if job_name not in self.mlflow_jobs_run_id:
