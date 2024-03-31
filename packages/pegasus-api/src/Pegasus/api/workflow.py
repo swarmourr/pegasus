@@ -393,12 +393,13 @@ class PegasusTracker():
         for id,used_transformation_path in enumerate(self.wf_transformations_path):
             self.rc.add_replica("local",self.wf_transformations_name[id],used_transformation_path)
             self.transfomations_replicas_file.append(File(self.wf_transformations_name[id]))
-        job_args=f"-files {' '.join([x.lfn for x in self.transfomations_replicas_file])} -names {' '.join([x for x in self.wf_transformations_name])} -path {' '.join([x for x in self.wf_transformations_path])} --use-git -token {self.token} -owner {self.owner} -repo {self.repo} -branch {self.branch}"
-        transformation_versioning_job=(Job("version_transformations",_id="transformation_versioning_job", node_label="transformation_versioning_job")
-                                                .add_inputs(*self.transfomations_replicas_file)
-                                                .add_outputs(metadata_output_files)
-                                                .add_args(job_args)) 
-        self.wf.add_jobs(transformation_versioning_job)
+        if len(self.transfomations_replicas_file) !=0:
+            job_args=f"-files {' '.join([x.lfn for x in self.transfomations_replicas_file])} -names {' '.join([x for x in self.wf_transformations_name])} -path {' '.join([x for x in self.wf_transformations_path])} --use-git -token {self.token} -owner {self.owner} -repo {self.repo} -branch {self.branch}"
+            transformation_versioning_job=(Job("version_transformations",_id="transformation_versioning_job", node_label="transformation_versioning_job")
+                                                    .add_inputs(*self.transfomations_replicas_file)
+                                                    .add_outputs(metadata_output_files)
+                                                    .add_args(job_args)) 
+            self.wf.add_jobs(transformation_versioning_job)
 
         return self.wf
 
@@ -499,19 +500,19 @@ class PegasusTracker():
         return self.wf
     
     def full_tracker(self):
+            self.wf=self.track_transformations(full=True)
             self.wf=self.track_input(full=True)
             self.wf=self.track_output(full=True)
             self.wf=self.track_wf(full=True)
-            self.wf=self.track_transformations(full=True)
             self.wf=self.build_metadata()
             
             return self.wf
 
     def default_tracker(self):
+            self.wf=self.track_transformations(full=False)
             self.wf=self.track_input(full=False)
             self.wf=self.track_output(full=False)
             self.wf=self.track_wf(full=False)
-            self.wf=self.track_transformations(full=False)
             self.wf=self.build_metadata()
             
             return self.wf
@@ -2504,10 +2505,12 @@ class Workflow(Writable, HookMixin, ProfileMixin, MetadataMixin):
             tracker.track_input()
         elif self.tracker_type == "outputs":
             tracker.track_output()
+        elif self.tracker_type == "transformations":
+            tracker.track_transformations()
         elif self.tracker_type == "auto":
             tracker.auto_logger()
         else:
-            print("No tracking option chosen ==> Analyzing the workflows for potential Metadta")
+            print("No tracking option chosen ==> Analyzing the workflows for potential Metadata")
             tracker.default_tracker()
         # ensure user is aware that SiteCatalog and TransformationCatalog are
         # not inherited by SubWorkflows when those two catalogs are embedded

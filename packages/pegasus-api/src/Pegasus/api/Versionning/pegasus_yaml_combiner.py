@@ -94,10 +94,10 @@ class GitHubFilePusher:
         file_path = self.local_file_path
         # Prepare the file path for the API request
         file_url = f"{api_base_url}{file_path}?ref={self.branch_name}"
-
+        print(file_url)
         # Make a GET request to retrieve the file content
         response = requests.get(file_url, headers=headers)
-
+        print(response.json())
         if response.status_code == 200:
             # Decode the content from base64
             #content_base64 = response.json()["content"]
