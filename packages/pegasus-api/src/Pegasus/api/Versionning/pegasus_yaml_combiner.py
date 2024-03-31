@@ -103,7 +103,7 @@ class GitHubFilePusher:
             #content_base64 = response.json()["content"]
             #file_content = base64.b64decode(content_base64).decode("utf-8")
             file_content = requests.get(response.json()["download_url"])
-            return file_content
+            return file_content.text
         else:
             print(f"Failed to pull file '{file_path}': {response.text}")
             return None
