@@ -375,7 +375,6 @@ class PegasusTracker():
         self.transfomations_replicas_file=[]
         wf_trans = list(self.wf.transformation_catalog.__dict__.items())
         metadata_output_files=File(f"pegasus-data/metadata_transformations.yaml")
-        self.metadata_version_outputs.append(metadata_output_files)
         for trans in wf_trans:
             if trans[0] == "transformations":
                 for trans_key, trans_value in trans[1].items():
@@ -394,6 +393,7 @@ class PegasusTracker():
             self.rc.add_replica("local",self.wf_transformations_name[id],used_transformation_path)
             self.transfomations_replicas_file.append(File(self.wf_transformations_name[id]))
         if len(self.transfomations_replicas_file) !=0:
+            self.metadata_version_outputs.append(metadata_output_files)
             job_args=f"-files {' '.join([x.lfn for x in self.transfomations_replicas_file])} -names {' '.join([x for x in self.wf_transformations_name])} -path {' '.join([x for x in self.wf_transformations_path])} --use-git -token {self.token} -owner {self.owner} -repo {self.repo} -branch {self.branch}"
             transformation_versioning_job=(Job("version_transformations",_id="transformation_versioning_job", node_label="transformation_versioning_job")
                                                     .add_inputs(*self.transfomations_replicas_file)
