@@ -471,7 +471,7 @@ class PegasusTracker():
         return self.wf
     
     def build_metadata(self):
-        if self.metadata_combiner :
+        if self.metadata_combiner and len(self.metadata_version_outputs)!=0:
             self.metadata_output_combiner=File(f"metadata.yaml")
             metadata_output_combiner_job=(Job("combiner", _id="metadata_combiner", node_label="metadata_combiner")
                                 .add_inputs(*self.metadata_version_outputs,self.metadata_file)
