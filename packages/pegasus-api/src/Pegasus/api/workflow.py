@@ -500,19 +500,19 @@ class PegasusTracker():
         return self.wf
     
     def full_tracker(self):
-            self.wf=self.track_transformations(full=True)
             self.wf=self.track_input(full=True)
             self.wf=self.track_output(full=True)
             self.wf=self.track_wf(full=True)
+            self.wf=self.track_transformations(full=True)
             self.wf=self.build_metadata()
             
             return self.wf
 
     def default_tracker(self):
-            self.wf=self.track_transformations(full=False)
             self.wf=self.track_input(full=False)
             self.wf=self.track_output(full=False)
             self.wf=self.track_wf(full=False)
+            self.wf=self.track_transformations(full=False)
             self.wf=self.build_metadata()
             
             return self.wf
