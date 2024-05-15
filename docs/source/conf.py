@@ -16,6 +16,7 @@ author = 'pegasus-WMS'
 extensions = [
     'sphinx_rtd_theme',
     'sphinx_design',
+    'sphinx.ext.githubpages',
 ]
 
 templates_path = ['_templates']
