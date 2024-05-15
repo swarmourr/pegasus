@@ -32,7 +32,7 @@ Pegasus-wms File/Data Class
 Code
 ~~~~~~~~~~~~~~~~ 
 Pegasus-wms Code/Transformation Class
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
         A transformation, which can be a standalone executable, or one that requires other executables. 
         The transformation class is defined as follows:
 
@@ -460,7 +460,7 @@ The table presents general information about workflows and files, encompassing d
        8e29b4fbd987b83a33261ed4d
 
 Pegasus-WMS Tracking Capabilities
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. list-table:: Pegasus-WMS Tracking Capabilities
    :widths: 15 15 15 15 15 15 15
