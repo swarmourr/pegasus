@@ -2507,7 +2507,7 @@ class Workflow(Writable, HookMixin, ProfileMixin, MetadataMixin):
             tracker.track_output()
         elif self.tracker_type == "transformations":
             tracker.track_transformations()
-        elif self.tracker_type == "auto":
+        elif self.tracker_type == "basic":
             tracker.auto_logger()
         else:
             print("No tracking option chosen ==> Analyzing the workflows for potential Metadata")
