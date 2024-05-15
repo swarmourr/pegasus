@@ -1,0 +1,327 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Examples &mdash; pegasus-wms-Tracking-pkg  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/design-tabs.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Pegasus-WMS Tracking" href="code.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> pegasus-wms-Tracking-pkg
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="code.html">Pegasus-WMS Tracking</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#galaxy-classification-workflow">Galaxy Classification Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#context">Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#workflow-overview">Workflow Overview</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#lung-segmentation-workflow">Lung Segmentation Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">Workflow Overview</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#federated-learning-workflow">Federated learning Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id3">Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">Workflow Overview</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pegasus-wms-Tracking-pkg</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Examples</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/tutorials.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="examples">
+<h1>Examples<a class="headerlink" href="#examples" title="Permalink to this heading">¶</a></h1>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>All the workflow examples provided are for demonstration purposes only.
+In order to run them, it is necessary to have an execution environment
+set up, preferably with updated parameters such as file paths and scripts.
+The full project, including execution files, is provided in the Git repository.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The notebook is provided for generating workflows.
+You can create a copy and change the <code class="docutils literal notranslate"><span class="pre">tracker_type</span></code> parameter
+and update the metadata tracking information to explore tracking options and configurations.</p>
+</div>
+<div class="section" id="galaxy-classification-workflow">
+<h2>Galaxy Classification Workflow<a class="headerlink" href="#galaxy-classification-workflow" title="Permalink to this heading">¶</a></h2>
+<div class="section" id="context">
+<h3>Context<a class="headerlink" href="#context" title="Permalink to this heading">¶</a></h3>
+<p>Scientists use astronomical data from large-scale surveys such as the Sloan Digital Sky Survey (SDSS) to, among other tasks, map astronomical objects and study their evolution. The galaxy morphology classification is a critical step towards understanding how galaxies form and evolve. Due to massive amounts of data currently available, researchers aim to develop robust deep learning models to automatically classify images of the galaxies into 1 of 5 categories: completely round-smooth, in-between smooth, cigar-shaped smooth, edge-on, and spiral. The implementation of this workflow is based on a publication [9] and is publicly available [10].</p>
+</div>
+<div class="section" id="workflow-overview">
+<h3>Workflow Overview<a class="headerlink" href="#workflow-overview" title="Permalink to this heading">¶</a></h3>
+<p>The Galaxy Classification Workflow (Figure 1) utilizes the Galaxy Zoo 2 dataset that consists of 61,578 RGB images, each of size 424x424x3 pixels (1.9 GB of compressed data). The first stage of the workflow (Dataset Generation and Split) filters out galaxies based on their feature scores. This reduced dataset of 28,790 images is split into training, validation, and test sets. These datasets are passed to Pre-process Images jobs where several data transformations (e.g., crop, downscale, whitening) are applied. To address the problem of class imbalance in the dataset, Augment Images jobs generate additional instances of underrepresented galaxy types. Next, the VGG16 HPO job utilizes the Optuna [11], an HPO framework, to find a good set of hyperparameters (e.g., learning rate, numbers of transferred layers). The chosen hyperparameters and all the data are sent to the Train VGG16 job where the model is trained with the chosen hyperparameters. The weights of the trained model are saved to a checkpoint file. Finally, the Inference and Evaluation job runs predictions on the test set, generates statistics and plots that provide insights into the quality of the trained model.</p>
+<div class="figure align-default" id="id5">
+<img alt="_images/galasywffinal.png" src="_images/galasywffinal.png" />
+<p class="caption"><span class="caption-text">Galaxy Classification Workflow</span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
+</div>
+<div style="display:flex; justify-content: center;">
+
+    <a href="https://colab.research.google.com/drive/1CNgn0LRvZCfRBmstT-TxpqslgtEWSMIc?usp=sharing" class="btn" style="background-color:#2980B9; color:white; border-radius:5px; padding:10px 20px; text-decoration:none; display:flex; align-items:center; margin-right: 10px;" target="_blank">
+        <img src="https://colab.research.google.com/img/colab_favicon_256px.png" style="width:30px; height:30px; margin-right:10px;" alt="Google Colab Icon">
+        Open in Google Colab
+    </a>
+
+    <a href="https://github.com/pegasus-isi/galaxy-classification-workflow" class="btn" style="background-color:#2980B9; color:white; border-radius:5px; padding:10px 20px; text-decoration:none; display:flex; align-items:center; margin-left: 10px;" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg" style="width:30px; height:30px; margin-right:10px;" alt="GitHub Icon">
+        View on GitHub
+    </a>
+
+</div></div>
+</div>
+<div class="section" id="lung-segmentation-workflow">
+<h2>Lung Segmentation Workflow<a class="headerlink" href="#lung-segmentation-workflow" title="Permalink to this heading">¶</a></h2>
+<div class="section" id="id1">
+<h3>Context<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h3>
+<p>Precise detection of the borders of organs and lesions in medical images such as X-rays, CT, or MRI scans is an essential step towards correct diagnosis and treatment planning. We implement a workflow that employs supervised learning techniques to locate lungs on X-ray images. The implementation is publicly available [12].</p>
+</div>
+<div class="section" id="id2">
+<h3>Workflow Overview<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h3>
+<p>The Lung Segmentation Workflow  uses the Chest X-ray Masks and Labels dataset (800 high-resolution X-ray images and masks, 5.4 GB) available on Kaggle. The dataset is split into training, validation, and test sets before the workflow starts. Each set consists of original lung images (3000x2933 pixels each, 6.3 MB in size) and their associated masks (same resolution, 30 KB in size). The Pre-process and Augment Images job resizes images (lungs and masks) to 256x256 pixels and normalizes lung X-rays. Additionally, for each pair of lung image and mask in the train dataset, two new pairs are generated through image augmentation (e.g., rotations, flips). Next, the train and validation data are passed to the UNet HPO job, where Optuna [11] explores different learning rates. The Train UNet job fine-tunes the UNet model with the recommended learning rate on the concatenated train and validation set, and saves the weights into a file. The Inference on UNet job uses the trained model to generate masks for the test X-ray images. The final step of the workflow, the Evaluation job, generates a PDF file with the scores for relevant performance metrics and prints examples of lung segmentation images produced by the model. As the inference and evaluation steps are implemented as separated jobs, the Inference on UNet job can be deployed independently for real-world predictions.</p>
+<div class="figure align-default" id="id6">
+<img alt="_images/lungpdf.png" src="_images/lungpdf.png" />
+<p class="caption"><span class="caption-text">Lung Segmentation Workflow</span><a class="headerlink" href="#id6" title="Permalink to this image">¶</a></p>
+</div>
+<div style="display:flex; justify-content: center;">
+
+    <a href="https://colab.research.google.com/drive/1Wg_gEb2l_Ccr-O5oVORusa7gtM0spajM?usp=sharing" class="btn" style="background-color:#2980B9; color:white; border-radius:5px; padding:10px 20px; text-decoration:none; display:flex; align-items:center; margin-right: 10px;" target="_blank">
+        <img src="https://colab.research.google.com/img/colab_favicon_256px.png" style="width:30px; height:30px; margin-right:10px;" alt="Google Colab Icon">
+        Open in Google Colab
+    </a>
+
+    <a href="https://github.com/pegasus-isi/lung-instance-segmentation-workflow" class="btn" style="background-color:#2980B9; color:white; border-radius:5px; padding:10px 20px; text-decoration:none; display:flex; align-items:center; margin-left: 10px;" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg" style="width:30px; height:30px; margin-right:10px;" alt="GitHub Icon">
+        View on GitHub
+    </a>
+
+</div></div>
+</div>
+<div class="section" id="federated-learning-workflow">
+<h2>Federated learning Workflow<a class="headerlink" href="#federated-learning-workflow" title="Permalink to this heading">¶</a></h2>
+<div class="section" id="id3">
+<h3>Context<a class="headerlink" href="#id3" title="Permalink to this heading">¶</a></h3>
+<p>Federated Learning (FL), introduced by Google in 2017 [1], is a method addressing privacy concerns by enabling local training on individual devices or servers. Each device or server computes model updates using its local data, which are then aggregated centrally to update the global model. This iterative process enhances edge computing capabilities while ensuring data privacy and security.
+[1] McMahan, H. Brendan, et al. “Communication-efficient learning of deep networks from decentralized data.” Artificial Intelligence and Statistics. PMLR, 2017.</p>
+</div>
+<div class="section" id="id4">
+<h3>Workflow Overview<a class="headerlink" href="#id4" title="Permalink to this heading">¶</a></h3>
+<p>This implementation of federated learning as a use case due to the complexity associated with managing distributed rounds and handling a large number of participants in FL training or evaluations. Providing an overview of all user performance during training or evaluation can be challenging, as is identifying the data used in each round, representing a challenging task for any individual.</p>
+<p>The implementation of one round of Federated Learning (FL), covering the entire FL workflow from model initialization to global performance evaluation. Initially, an initial model is created using the init_model job, followed by the concurrent selection of 3 clients for local training. These clients utilize the initial model and input data to train local models, facilitated by the local training client * job. Subsequently, the local models are aggregated into a single global model using the Global model Aggregation job. The global model is then evaluated by a selected set of clients, chosen using a random selection approach in this implementation. The Model evaluation client * job generates local evaluation files per client, which are used by the Perf_evaluation jobs to generate a global evaluation of the model. This evaluation is based on a predefined logic, such as the average of metrics from local evaluations.</p>
+<div class="figure align-default" id="id7">
+<img alt="_images/flWF.png" src="_images/flWF.png" />
+<p class="caption"><span class="caption-text">One round Federated learning Workflow</span><a class="headerlink" href="#id7" title="Permalink to this image">¶</a></p>
+</div>
+<div style="display:flex; justify-content: center;">
+
+    <a href="https://colab.research.google.com/drive/1eD3r1Yb9KIImww_gqFrmzHJqqmw3ZNOQ?usp=sharing" class="btn" style="background-color:#2980B9; color:white; border-radius:5px; padding:10px 20px; text-decoration:none; display:flex; align-items:center; margin-right: 10px;" target="_blank">
+        <img src="https://colab.research.google.com/img/colab_favicon_256px.png" style="width:30px; height:30px; margin-right:10px;" alt="Google Colab Icon">
+        Open in Google Colab
+    </a>
+
+    <a href="https://github.com/pegasus-isi/federated-learning-example/" class="btn" style="background-color:#2980B9; color:white; border-radius:5px; padding:10px 20px; text-decoration:none; display:flex; align-items:center; margin-left: 10px;" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg" style="width:30px; height:30px; margin-right:10px;" alt="GitHub Icon">
+        View on GitHub
+    </a>
+
+</div></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="code.html" class="btn btn-neutral float-left" title="Pegasus-WMS Tracking" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2024,  pegasus-WMS.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

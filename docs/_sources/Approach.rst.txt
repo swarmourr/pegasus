@@ -1,0 +1,26 @@
+
+
+
+Overview
+-----------
+
+In order to track the workflows in Pegasus-WMS, we extend the metadata function of the main class composing Pegasus workflows. We utilize the `File <https://pegasus.isi.edu/documentation/python/Pegasus.api.html#Pegasus.api.replica_catalog.File>`_ class, responsible for data management, from the Pegasus API documentation. Additionally, we leverage the `Transformations <https://pegasus.isi.edu/documentation/python/Pegasus.api.html#Pegasus.api.transformation_catalog.Transformation>`_ class, responsible for managing executable code. Finally, we add another parameter for the `Workflow <https://pegasus.isi.edu/documentation/python/Pegasus.api.html#Pegasus.api.workflow.Workflow>`_ class to instantiate the workflow.
+
+.. warning::
+
+    In this documentation, we describe how to use the tracking tags with Pegasus-WMS for workflow implementation. For detailed instructions and examples, please visit the `full documentation <https://pegasus.isi.edu/documentation/index.html>`_.
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+   ./code.rst
+
+
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`

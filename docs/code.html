@@ -1,0 +1,953 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Pegasus-WMS Tracking &mdash; pegasus-wms-Tracking-pkg  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/design-tabs.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Examples" href="tutorials.html" />
+    <link rel="prev" title="Welcome to pegasus-wms Tracking pkg’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> pegasus-wms-Tracking-pkg
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Pegasus-WMS Tracking</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#pegasus-wms-definitions">Pegasus-wms definitions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#data">Data</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pegasus-wms-file-data-class">Pegasus-wms File/Data Class</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#code">Code</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pegasus-wms-code-transformation-class">Pegasus-wms Code/Transformation Class</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#workflow">Workflow</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pegasus-wms-workflow-class">Pegasus-wms Workflow Class</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#workflow-example">workflow example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#metadata">Metadata</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#metadata-function">Metadata Function</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#workflow-tracking">Workflow Tracking</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#input-data-tracking">Input data tracking</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#input-tracking-parameters">Input  tracking parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#output-data-tracking">Output Data Tracking</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#output-tracking-parameters">Output  tracking parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#code-tracking">Code Tracking</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#transformations-tracking-parameters">Transformations tracking parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">Workflow Tracking</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#workflow-tracking-parameters">Workflow tracking parameters</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pegasus-tracking-options">Pegasus Tracking options</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#high-level-tracking-options">High-Level Tracking Options</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id5"><code class="docutils literal notranslate"><span class="pre">Workflow</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#metadata-files">Metadata Files</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pegasus-wms-tracking-capabilities">Pegasus-WMS Tracking Capabilities</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Examples</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pegasus-wms-Tracking-pkg</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Pegasus-WMS Tracking</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/code.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="pegasus-wms-tracking">
+<h1>Pegasus-WMS Tracking<a class="headerlink" href="#pegasus-wms-tracking" title="Permalink to this heading">¶</a></h1>
+<div class="section" id="pegasus-wms-definitions">
+<h2>Pegasus-wms definitions<a class="headerlink" href="#pegasus-wms-definitions" title="Permalink to this heading">¶</a></h2>
+<div class="section" id="data">
+<h3>Data<a class="headerlink" href="#data" title="Permalink to this heading">¶</a></h3>
+<div class="section" id="pegasus-wms-file-data-class">
+<h4>Pegasus-wms File/Data Class<a class="headerlink" href="#pegasus-wms-file-data-class" title="Permalink to this heading">¶</a></h4>
+<blockquote>
+<div><p>Pegasus provides the <cite>File</cite> class to manage the data in workflow. This class is used to represent the inputs and outputs of a Job.
+This class is defined as follows:</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="File">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">File</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lfn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">for_planning</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#File" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: MetadataMixin</p>
+<p>A workflow File. This class is used to represent the inputs and outputs of a Job.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">input_file</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="s2">&quot;input_data.txt&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">add_metadata</span><span class="p">(</span><span class="n">creator</span><span class="o">=</span><span class="s2">&quot;ryan&quot;</span><span class="p">)</span>
+<span class="n">output_file</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="s2">&quot;output_data.txt&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">add_metadata</span><span class="p">(</span><span class="n">creator</span><span class="o">=</span><span class="s2">&quot;ryan&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lfn</strong> (<em>str</em>) – a unique logical filename</p></li>
+<li><p><strong>size</strong> (<em>int</em><em>, </em><em>optional</em>) – size in bytes, defaults to None</p></li>
+<li><p><strong>for_planning</strong> (<em>bool</em><em>, </em><em>optional</em>) – indicate that a file is to be used for planning purposes, defaults to False</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="code">
+<h3>Code<a class="headerlink" href="#code" title="Permalink to this heading">¶</a></h3>
+<div class="section" id="pegasus-wms-code-transformation-class">
+<h4>Pegasus-wms Code/Transformation Class<a class="headerlink" href="#pegasus-wms-code-transformation-class" title="Permalink to this heading">¶</a></h4>
+<blockquote>
+<div><p>A transformation, which can be a standalone executable, or one that requires other executables.
+The transformation class is defined as follows:</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="Transformation">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Transformation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ProfileMixin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">HookMixin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">MetadataMixin</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Transformation" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – the name of the transformation</p></li>
+<li><p><strong>namespace</strong> (<em>str</em><em>, </em><em>optional</em>) – the namespace of the transformation, defaults to None</p></li>
+<li><p><strong>version</strong> (<em>str</em><em>, </em><em>optional</em>) – the version of the transformation, defaults to None</p></li>
+<li><p><strong>site</strong> (<em>str</em><em>, </em><em>optional</em>) – the site where the transformation is located, defaults to None</p></li>
+<li><p><strong>pfn</strong> (<em>str</em><em> or </em><em>Path</em><em>, </em><em>optional</em>) – the physical filename of the transformation, defaults to None</p></li>
+<li><p><strong>is_stageable</strong> (<em>bool</em><em>, </em><em>optional</em>) – indicates if the transformation is stageable, defaults to False</p></li>
+<li><p><strong>bypass_staging</strong> (<em>bool</em><em>, </em><em>optional</em>) – indicates if the transformation bypasses staging, defaults to False</p></li>
+<li><p><strong>arch</strong> (<em>Arch</em><em>, </em><em>optional</em>) – the architecture of the transformation, defaults to None</p></li>
+<li><p><strong>os_type</strong> (<em>OS</em><em>, </em><em>optional</em>) – the operating system type of the transformation, defaults to None</p></li>
+<li><p><strong>os_release</strong> (<em>str</em><em>, </em><em>optional</em>) – the operating system release of the transformation, defaults to None</p></li>
+<li><p><strong>os_version</strong> (<em>str</em><em>, </em><em>optional</em>) – the operating system version of the transformation, defaults to None</p></li>
+<li><p><strong>container</strong> (<em>Container</em><em> or </em><em>str</em><em>, </em><em>optional</em>) – the container used for the transformation, defaults to None</p></li>
+<li><p><strong>checksum</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>str</em><em>]</em><em>, </em><em>optional</em>) – the checksum of the transformation, defaults to None</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="workflow">
+<h3>Workflow<a class="headerlink" href="#workflow" title="Permalink to this heading">¶</a></h3>
+<div class="section" id="pegasus-wms-workflow-class">
+<h4>Pegasus-wms Workflow Class<a class="headerlink" href="#pegasus-wms-workflow-class" title="Permalink to this heading">¶</a></h4>
+<blockquote>
+<div><p>Represents multi-step computational steps as a directed acyclic graph.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="Workflow">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Workflow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Writable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">HookMixin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ProfileMixin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">MetadataMixin</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Workflow" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – name of the workflow</p></li>
+<li><p><strong>infer_dependencies</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether or not to automatically compute job dependencies based on input and output files used by each job, defaults to True</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – workflow name may not contain any / or spaces</p>
+</dd>
+</dl>
+<p>This class is defined as follows:</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="Workflow.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">infer_dependencies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Workflow.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructor method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – name of the workflow</p></li>
+<li><p><strong>infer_dependencies</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether or not to automatically compute job dependencies based on input and output files used by each job, defaults to True</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – workflow name may not contain any / or spaces</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">wf</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="s2">&quot;blackdiamond&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="workflow-example">
+<h3>workflow example<a class="headerlink" href="#workflow-example" title="Permalink to this heading">¶</a></h3>
+<blockquote>
+<div><p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">Pegasus.api</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+
+<span class="c1"># --- Replicas -----------------------------------------------------------------</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;f.a&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;This is sample input to KEG&quot;</span><span class="p">)</span>
+
+<span class="n">fa</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="s2">&quot;f.a&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">add_metadata</span><span class="p">(</span><span class="n">creator</span><span class="o">=</span><span class="s2">&quot;ryan&quot;</span><span class="p">)</span>
+<span class="n">rc</span> <span class="o">=</span> <span class="n">ReplicaCatalog</span><span class="p">()</span><span class="o">.</span><span class="n">add_replica</span><span class="p">(</span><span class="s2">&quot;local&quot;</span><span class="p">,</span> <span class="n">fa</span><span class="p">,</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;f.a&quot;</span><span class="p">)</span>
+
+<span class="c1"># --- Transformations ----------------------------------------------------------</span>
+<span class="n">preprocess</span> <span class="o">=</span> <span class="n">Transformation</span><span class="p">(</span>
+                <span class="s2">&quot;preprocess&quot;</span><span class="p">,</span>
+                <span class="n">site</span><span class="o">=</span><span class="s2">&quot;condorpool&quot;</span><span class="p">,</span>
+                <span class="n">pfn</span><span class="o">=</span><span class="s2">&quot;/usr/bin/pegasus-keg&quot;</span><span class="p">,</span>
+                <span class="n">is_stageable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">arch</span><span class="o">=</span><span class="n">Arch</span><span class="o">.</span><span class="n">X86_64</span><span class="p">,</span>
+                <span class="n">os_type</span><span class="o">=</span><span class="n">OS</span><span class="o">.</span><span class="n">LINUX</span>
+            <span class="p">)</span>
+
+<span class="n">findrange</span> <span class="o">=</span> <span class="n">Transformation</span><span class="p">(</span>
+                <span class="s2">&quot;findrange&quot;</span><span class="p">,</span>
+                <span class="n">site</span><span class="o">=</span><span class="s2">&quot;condorpool&quot;</span><span class="p">,</span>
+                <span class="n">pfn</span><span class="o">=</span><span class="s2">&quot;/usr/bin/pegasus-keg&quot;</span><span class="p">,</span>
+                <span class="n">is_stageable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">arch</span><span class="o">=</span><span class="n">Arch</span><span class="o">.</span><span class="n">X86_64</span><span class="p">,</span>
+                <span class="n">os_type</span><span class="o">=</span><span class="n">OS</span><span class="o">.</span><span class="n">LINUX</span>
+            <span class="p">)</span>
+
+<span class="n">analyze</span> <span class="o">=</span> <span class="n">Transformation</span><span class="p">(</span>
+                <span class="s2">&quot;analyze&quot;</span><span class="p">,</span>
+                <span class="n">site</span><span class="o">=</span><span class="s2">&quot;condorpool&quot;</span><span class="p">,</span>
+                <span class="n">pfn</span><span class="o">=</span><span class="s2">&quot;/usr/bin/pegasus-keg&quot;</span><span class="p">,</span>
+                <span class="n">is_stageable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">arch</span><span class="o">=</span><span class="n">Arch</span><span class="o">.</span><span class="n">X86_64</span><span class="p">,</span>
+                <span class="n">os_type</span><span class="o">=</span><span class="n">OS</span><span class="o">.</span><span class="n">LINUX</span>
+            <span class="p">)</span>
+
+<span class="n">tc</span> <span class="o">=</span> <span class="n">TransformationCatalog</span><span class="p">()</span><span class="o">.</span><span class="n">add_transformations</span><span class="p">(</span><span class="n">preprocess</span><span class="p">,</span> <span class="n">findrange</span><span class="p">,</span> <span class="n">analyze</span><span class="p">)</span>
+
+<span class="c1"># --- Workflow -----------------------------------------------------------------</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">                    [f.b1] - (findrange) - [f.c1]</span>
+<span class="sd">                    /                             \\</span>
+<span class="sd">[f.a] - (preprocess)                               (analyze) - [f.d]</span>
+<span class="sd">                    \\                             /</span>
+<span class="sd">                    [f.b2] - (findrange) - [f.c2]</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="n">wf</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="s2">&quot;blackdiamond&quot;</span><span class="p">)</span>
+
+<span class="n">fb1</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="s2">&quot;f.b1&quot;</span><span class="p">)</span>
+<span class="n">fb2</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="s2">&quot;f.b2&quot;</span><span class="p">)</span>
+<span class="n">job_preprocess</span> <span class="o">=</span> <span class="n">Job</span><span class="p">(</span><span class="n">preprocess</span><span class="p">)</span>\\
+                    <span class="o">.</span><span class="n">add_args</span><span class="p">(</span><span class="s2">&quot;-a&quot;</span><span class="p">,</span> <span class="s2">&quot;preprocess&quot;</span><span class="p">,</span> <span class="s2">&quot;-T&quot;</span><span class="p">,</span> <span class="s2">&quot;3&quot;</span><span class="p">,</span> <span class="s2">&quot;-i&quot;</span><span class="p">,</span> <span class="n">fa</span><span class="p">,</span> <span class="s2">&quot;-o&quot;</span><span class="p">,</span> <span class="n">fb1</span><span class="p">,</span> <span class="n">fb2</span><span class="p">)</span>\\
+                    <span class="o">.</span><span class="n">add_inputs</span><span class="p">(</span><span class="n">fa</span><span class="p">)</span>\\
+                    <span class="o">.</span><span class="n">add_outputs</span><span class="p">(</span><span class="n">fb1</span><span class="p">,</span> <span class="n">fb2</span><span class="p">)</span>
+
+<span class="n">fc1</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="s2">&quot;f.c1&quot;</span><span class="p">)</span>
+<span class="n">job_findrange_1</span> <span class="o">=</span> <span class="n">Job</span><span class="p">(</span><span class="n">findrange</span><span class="p">)</span>\\
+                    <span class="o">.</span><span class="n">add_args</span><span class="p">(</span><span class="s2">&quot;-a&quot;</span><span class="p">,</span> <span class="s2">&quot;findrange&quot;</span><span class="p">,</span> <span class="s2">&quot;-T&quot;</span><span class="p">,</span> <span class="s2">&quot;3&quot;</span><span class="p">,</span> <span class="s2">&quot;-i&quot;</span><span class="p">,</span> <span class="n">fb1</span><span class="p">,</span> <span class="s2">&quot;-o&quot;</span><span class="p">,</span> <span class="n">fc1</span><span class="p">)</span>\\
+                    <span class="o">.</span><span class="n">add_inputs</span><span class="p">(</span><span class="n">fb1</span><span class="p">)</span>\\
+                    <span class="o">.</span><span class="n">add_outputs</span><span class="p">(</span><span class="n">fc1</span><span class="p">)</span>
+
+<span class="n">fc2</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="s2">&quot;f.c2&quot;</span><span class="p">)</span>
+<span class="n">job_findrange_2</span> <span class="o">=</span> <span class="n">Job</span><span class="p">(</span><span class="n">findrange</span><span class="p">)</span>\\
+                    <span class="o">.</span><span class="n">add_args</span><span class="p">(</span><span class="s2">&quot;-a&quot;</span><span class="p">,</span> <span class="s2">&quot;findrange&quot;</span><span class="p">,</span> <span class="s2">&quot;-T&quot;</span><span class="p">,</span> <span class="s2">&quot;3&quot;</span><span class="p">,</span> <span class="s2">&quot;-i&quot;</span><span class="p">,</span> <span class="n">fb2</span><span class="p">,</span> <span class="s2">&quot;-o&quot;</span><span class="p">,</span> <span class="n">fc2</span><span class="p">)</span>\\
+                    <span class="o">.</span><span class="n">add_inputs</span><span class="p">(</span><span class="n">fb2</span><span class="p">)</span>\\
+                    <span class="o">.</span><span class="n">add_outputs</span><span class="p">(</span><span class="n">fc2</span><span class="p">)</span>
+
+<span class="n">fd</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="s2">&quot;f.d&quot;</span><span class="p">)</span>
+<span class="n">job_analyze</span> <span class="o">=</span> <span class="n">Job</span><span class="p">(</span><span class="n">analyze</span><span class="p">)</span>\\
+                <span class="o">.</span><span class="n">add_args</span><span class="p">(</span><span class="s2">&quot;-a&quot;</span><span class="p">,</span> <span class="s2">&quot;analyze&quot;</span><span class="p">,</span> <span class="s2">&quot;-T&quot;</span><span class="p">,</span> <span class="s2">&quot;3&quot;</span><span class="p">,</span> <span class="s2">&quot;-i&quot;</span><span class="p">,</span> <span class="n">fc1</span><span class="p">,</span> <span class="n">fc2</span><span class="p">,</span> <span class="s2">&quot;-o&quot;</span><span class="p">,</span> <span class="n">fd</span><span class="p">)</span>\\
+                <span class="o">.</span><span class="n">add_inputs</span><span class="p">(</span><span class="n">fc1</span><span class="p">,</span> <span class="n">fc2</span><span class="p">)</span>\\
+                <span class="o">.</span><span class="n">add_outputs</span><span class="p">(</span><span class="n">fd</span><span class="p">)</span>
+
+<span class="n">wf</span><span class="o">.</span><span class="n">add_jobs</span><span class="p">(</span><span class="n">job_preprocess</span><span class="p">,</span> <span class="n">job_findrange_1</span><span class="p">,</span> <span class="n">job_findrange_2</span><span class="p">,</span> <span class="n">job_analyze</span><span class="p">)</span>
+<span class="n">wf</span><span class="o">.</span><span class="n">add_replica_catalog</span><span class="p">(</span><span class="n">rc</span><span class="p">)</span>
+<span class="n">wf</span><span class="o">.</span><span class="n">add_transformation_catalog</span><span class="p">(</span><span class="n">tc</span><span class="p">)</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">wf</span><span class="o">.</span><span class="n">plan</span><span class="p">(</span><span class="n">submit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>\\
+        <span class="o">.</span><span class="n">wait</span><span class="p">()</span>\\
+        <span class="o">.</span><span class="n">analyze</span><span class="p">()</span>\\
+        <span class="o">.</span><span class="n">statistics</span><span class="p">()</span>
+<span class="k">except</span> <span class="n">PegasusClientError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="metadata">
+<h3>Metadata<a class="headerlink" href="#metadata" title="Permalink to this heading">¶</a></h3>
+<div class="section" id="metadata-function">
+<h4>Metadata Function<a class="headerlink" href="#metadata-function" title="Permalink to this heading">¶</a></h4>
+<blockquote>
+<div><p>All previous class provides the possibility to define additional metadata information, which can be used as a dictionary as described in the <a class="reference internal" href="#id4" title="add_metadata"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_metadata()</span></code></a> function.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="add_metadata">
+<span class="sig-name descname"><span class="pre">add_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#add_metadata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Example 1:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">job</span><span class="o">.</span><span class="n">add_metadata</span><span class="p">({</span><span class="s2">&quot;key1&quot;</span><span class="p">:</span> <span class="s2">&quot;value1&quot;</span><span class="p">})</span>
+</pre></div>
+</div>
+<p>Example 2:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">job</span><span class="o">.</span><span class="n">add_metadata</span><span class="p">(</span><span class="n">key1</span><span class="o">=</span><span class="s2">&quot;value1&quot;</span><span class="p">,</span> <span class="n">key2</span><span class="o">=</span><span class="s2">&quot;value2&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Union</em><em>[</em><em>str</em><em>, </em><em>int</em><em>, </em><em>float</em><em>, </em><em>bool</em><em>]</em><em>]</em>) – dictionary of key value pairs to add as metadata</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – each arg in args must be a dict</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>self</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div></blockquote>
+</div>
+</div>
+</div>
+<div class="section" id="workflow-tracking">
+<h2>Workflow Tracking<a class="headerlink" href="#workflow-tracking" title="Permalink to this heading">¶</a></h2>
+<div class="section" id="input-data-tracking">
+<h3>Input data tracking<a class="headerlink" href="#input-data-tracking" title="Permalink to this heading">¶</a></h3>
+<div class="section" id="input-tracking-parameters">
+<h4>Input  tracking parameters<a class="headerlink" href="#input-tracking-parameters" title="Permalink to this heading">¶</a></h4>
+<blockquote>
+<div><p>This class provides the possibility to define additional metadata information, including MLflow tracking behavior. If <cite>mlflow</cite> is set to “auto”, MLflow tracking will be automatically enabled. For custom MLflow configuration, provide a dictionary with “experiment_name” and “run_name” keys. If <cite>None</cite>, MLflow tracking will be disabled. The <cite>input_track</cite> parameter indicates whether the file is tracked or not.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">add_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_track</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mlflow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id0" title="Permalink to this definition">¶</a></dt>
+<dd><p>Example 1:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">input_file</span><span class="o">.</span><span class="n">add_metadata</span><span class="p">(</span><span class="n">input_track</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">mlflow</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;key1&quot;</span><span class="p">:</span> <span class="s2">&quot;value1&quot;</span><span class="p">})</span>
+</pre></div>
+</div>
+<p>Example 2:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">input_file</span><span class="o">.</span><span class="n">add_metadata</span><span class="p">(</span><span class="n">input_track</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">mlflow</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;experiment_name&quot;</span><span class="p">:</span> <span class="s2">&quot;my_experiment&quot;</span><span class="p">,</span> <span class="s2">&quot;run_name&quot;</span><span class="p">:</span> <span class="s2">&quot;my_run&quot;</span><span class="p">},</span> <span class="p">{</span><span class="s2">&quot;key1&quot;</span><span class="p">:</span> <span class="s2">&quot;value1&quot;</span><span class="p">})</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_track</strong> (<em>bool</em><em>, </em><em>optional</em>) – indicates whether the file is to be tracked, defaults to False</p></li>
+<li><p><strong>mlflow</strong> (<em>str</em><em>, </em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>str</em><em>]</em><em>, or </em><em>None</em><em>, </em><em>optional</em>) – specifies MLflow tracking behavior, defaults to “None”. If set to “auto”, MLflow tracking will be automatically enabled. If a dictionary is provided, MLflow tracking will be configured with the provided parameters (e.g., {“experiment_name”: “my_experiment”, “run_name”: “my_run”}). If <cite>None</cite>, MLflow tracking will be disabled.</p></li>
+<li><p><strong>args</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Union</em><em>[</em><em>str</em><em>, </em><em>int</em><em>, </em><em>float</em><em>, </em><em>bool</em><em>]</em><em>]</em>) – dictionary of key value pairs to add as metadata</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – each arg in args must be a dict</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>self</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="output-data-tracking">
+<h3>Output Data Tracking<a class="headerlink" href="#output-data-tracking" title="Permalink to this heading">¶</a></h3>
+<div class="section" id="output-tracking-parameters">
+<h4>Output  tracking parameters<a class="headerlink" href="#output-tracking-parameters" title="Permalink to this heading">¶</a></h4>
+<blockquote>
+<div><blockquote>
+<div><p>This method provides the possibility to define additional metadata information, including MLflow tracking behavior. If <cite>mlflow</cite> is set to “auto”, MLflow tracking will be automatically enabled. For custom MLflow configuration, provide a dictionary with “experiment_name” and “run_name” keys. If <cite>None</cite>, MLflow tracking will be disabled. The <cite>output_track</cite> parameter indicates whether the file is tracked or not.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="id1">
+<span class="sig-name descname"><span class="pre">add_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_track</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mlflow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Example 1:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">output_file</span><span class="o">.</span><span class="n">add_metadata</span><span class="p">(</span><span class="n">output_track</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">mlflow</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;key1&quot;</span><span class="p">:</span> <span class="s2">&quot;value1&quot;</span><span class="p">})</span>
+</pre></div>
+</div>
+<p>Example 2:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">output_file</span><span class="o">.</span><span class="n">add_metadata</span><span class="p">(</span><span class="n">output_track</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">mlflow</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;experiment_name&quot;</span><span class="p">:</span> <span class="s2">&quot;my_experiment&quot;</span><span class="p">,</span> <span class="s2">&quot;run_name&quot;</span><span class="p">:</span> <span class="s2">&quot;my_run&quot;</span><span class="p">},</span> <span class="p">{</span><span class="s2">&quot;key1&quot;</span><span class="p">:</span> <span class="s2">&quot;value1&quot;</span><span class="p">})</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>output_track</strong> (<em>bool</em><em>, </em><em>optional</em>) – indicates whether the file is to be tracked, defaults to False</p></li>
+<li><p><strong>mlflow</strong> (<em>str</em><em>, </em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>str</em><em>]</em><em>, or </em><em>None</em><em>, </em><em>optional</em>) – specifies MLflow tracking behavior, defaults to “auto”. If set to “auto”, MLflow tracking will be automatically enabled. If a dictionary is provided, MLflow tracking will be configured with the provided parameters (e.g., {“experiment_name”: “my_experiment”, “run_name”: “my_run”}). If <cite>None</cite>, MLflow tracking will be disabled.</p></li>
+<li><p><strong>args</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Union</em><em>[</em><em>str</em><em>, </em><em>int</em><em>, </em><em>float</em><em>, </em><em>bool</em><em>]</em><em>]</em>) – dictionary of key value pairs to add as metadata</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – each arg in args must be a dict</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>self</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div></blockquote>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>MLflow Tracking:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>MLflow tracking involves creating MLflow experiments and runs and adding the necessary information automatically for tracking as environment variables in the execution environment of the jobs.</p></li>
+</ul>
+</div></blockquote>
+<p>Data Tracking:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Data tracking involves creating additional jobs to generate files’ metadata and versioning them by using Git. The data is then sent to remote storage for tracking purposes.</p></li>
+</ul>
+</div></blockquote>
+</div>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="code-tracking">
+<h3>Code Tracking<a class="headerlink" href="#code-tracking" title="Permalink to this heading">¶</a></h3>
+<div class="section" id="transformations-tracking-parameters">
+<h4>Transformations tracking parameters<a class="headerlink" href="#transformations-tracking-parameters" title="Permalink to this heading">¶</a></h4>
+<blockquote>
+<div><dl class="py method">
+<dt class="sig sig-object py" id="id2">
+<span class="sig-name descname"><span class="pre">add_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trans_track</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add metadata key-value pairs to this object.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">trans</span><span class="o">.</span><span class="n">add_metadata</span><span class="p">(</span><span class="n">trans_track</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;key1&quot;</span><span class="p">:</span> <span class="s2">&quot;value1&quot;</span><span class="p">})</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>trans_track</strong> (<em>bool</em><em>, </em><em>optional</em>) – indicates whether the transformation is to be tracked, defaults to False</p></li>
+<li><p><strong>args</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Union</em><em>[</em><em>str</em><em>, </em><em>int</em><em>, </em><em>float</em><em>, </em><em>bool</em><em>]</em><em>]</em>) – dictionary of key-value pairs to add as metadata</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – each arg in args must be a dict</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>self</p>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Transformation Tracking</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Transformation tracking involves creating a branch in a configured Git repository with the name of the workflow and pushing all used transformations in the workflow instance to this branch.</p></li>
+</ul>
+</div></blockquote>
+</div>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="id3">
+<h3>Workflow Tracking<a class="headerlink" href="#id3" title="Permalink to this heading">¶</a></h3>
+<div class="section" id="workflow-tracking-parameters">
+<h4>Workflow tracking parameters<a class="headerlink" href="#workflow-tracking-parameters" title="Permalink to this heading">¶</a></h4>
+<blockquote>
+<div><dl class="py method">
+<dt class="sig sig-object py" id="id4">
+<span class="sig-name descname"><span class="pre">add_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wf_track</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add metadata key-value pairs to this object.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">wf</span><span class="o">.</span><span class="n">add_metadata</span><span class="p">(</span><span class="n">wf_track</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;key1&quot;</span><span class="p">:</span> <span class="s2">&quot;value1&quot;</span><span class="p">})</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wf_track</strong> (<em>bool</em><em>, </em><em>optional</em>) – indicates whether the abstract workflow is to be tracked, defaults to False</p></li>
+<li><p><strong>args</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Union</em><em>[</em><em>str</em><em>, </em><em>int</em><em>, </em><em>float</em><em>, </em><em>bool</em><em>]</em><em>]</em>) – dictionary of key-value pairs to add as metadata</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – each arg in args must be a dict</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>self</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div></blockquote>
+</div>
+</div>
+</div>
+<div class="section" id="pegasus-tracking-options">
+<h2>Pegasus Tracking options<a class="headerlink" href="#pegasus-tracking-options" title="Permalink to this heading">¶</a></h2>
+<div class="section" id="high-level-tracking-options">
+<h3>High-Level Tracking Options<a class="headerlink" href="#high-level-tracking-options" title="Permalink to this heading">¶</a></h3>
+<blockquote>
+<div><p>For the workflow management system, we added a high-level parameter called “tracker_type” that defines the WMS tracking policy.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="id5">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Workflow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Writable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">HookMixin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ProfileMixin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">MetadataMixin</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id5" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents multi-step computational steps as a directed acyclic graph.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – name of the workflow</p></li>
+<li><p><strong>infer_dependencies</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether or not to automatically compute job dependencies based on input and output files used by each job, defaults to True</p></li>
+<li><p><strong>tracker_type</strong> (<em>str</em><em>, </em><em>optional</em>) – <p>defines the workflow management system tracking policy. It supports the following policies:</p>
+<ul>
+<li><p>”none”: Indicates that no tracking will be performed for the workflow. No metadata or tracking information will be recorded. No predefined tags are needed.</p></li>
+<li><p>”full”: Enables full tracking of the workflow, including input and output files, transformations, the abstract workflow, MLflow preparation, and any other relevant metadata. No predefined tags are needed.</p></li>
+<li><p>”basic”: Tracks only the input and output files of the workflow. No predefined tags are needed.</p></li>
+<li><p>”inputs”: Focuses on tracking only input files used by each job in the workflow, recording information such as their location, size, and any associated metadata. Predefined tags for input files may be required.</p></li>
+<li><p>”outputs”: Similar to input tracking, this policy tracks output files produced by each job, recording information such as their location, size, and any associated metadata. Predefined tags for output files may be required.</p></li>
+<li><p>”transformations”: Tracks only the transformations used in the workflow, recording information such as their location, version, and any associated metadata. Predefined tags for transformations may be required.</p></li>
+</ul>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – workflow name may not contain any / or spaces</p>
+</dd>
+</dl>
+<p>This class is defined as follows:</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="id6">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">infer_dependencies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tracker_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'none'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id6" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructor method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – name of the workflow</p></li>
+<li><p><strong>infer_dependencies</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether or not to automatically compute job dependencies based on input and output files used by each job, defaults to True</p></li>
+<li><p><strong>tracker_type</strong> (<em>str</em><em>, </em><em>optional</em>) – defines the workflow management system tracking policy. Default is “none”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – workflow name may not contain any / or spaces</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">wf</span> <span class="o">=</span> <span class="n">Workflow</span><span class="p">(</span><span class="s2">&quot;blackdiamond&quot;</span><span class="p">,</span> <span class="n">tracker_type</span><span class="o">=</span><span class="s2">&quot;full&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="metadata-files">
+<h2>Metadata Files<a class="headerlink" href="#metadata-files" title="Permalink to this heading">¶</a></h2>
+<div class="section" id="overview">
+<h3>Overview<a class="headerlink" href="#overview" title="Permalink to this heading">¶</a></h3>
+<p>During each run, a number of files are utilized by jobs, and these are versioned by collecting information such as file type, last modification timestamp, and local path. Furthermore, details about the execution environment are captured, including maximum CPU and RAM limitations, system specifications, and the execution environment type. This comprehensive approach ensures that all relevant aspects of the workflow execution are documented and versioned, promoting reproducibility and maintaining consistency across different runs.</p>
+<p>In this metadata file, we also add a direct link to the run in the ML experimentation platform (currently MLflow) corresponding to the job that uses the file specified in the “mlflow_url” parameter.</p>
+<p>Additionally, a checksum is calculated before copying files to remote storage destinations like S3 and Google Drive. The remote locations are then added to the metadata file. Upon completion of the workflow, an additional job is introduced to aggregate all metadata files generated throughout the workflow. These files are consolidated in the central node, encompassing all runs from various experiments executed on this node.</p>
+<p>To ensure ongoing tracking, the central metadata file can be managed using versioning tools such as Git or GitHub, establishing a robust data versioning pipeline for complete traceability and reproducibility.</p>
+<p>In the remote storage, the folder structure mirrors that of the metadata file. Each experiment is represented by a folder containing subfolders for individual runs. Within each run folder, there are three subfolders: one for the workflow copy, another for input data, and the last one for output data.</p>
+<p>This versioning approach simplifies experiment reproduction, making it easily accessible and reproducible from anywhere with access to the Pegasus workflow executed and the shared metadata file containing the run identifier. We added also, a new command to Pegasus enabling users to copy all files from the remote storage, including the workflow, and rerun it. This process ensures that the experiment can be rerun with the same data and identified by the same run ID, facilitating consistent results without the risk of version mismatch or data modification.</p>
+<p>The table presents general information about workflows and files, encompassing details like workflow names, unique identifiers, file names, storage URLs, timestamps, sizes, and associated MLflow run links.</p>
+<table class="colwidths-given docutils align-default" id="id7">
+<caption><span class="caption-text">Workflow and File Tracked Information with Examples</span><a class="headerlink" href="#id7" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 19%" />
+<col style="width: 31%" />
+<col style="width: 12%" />
+<col style="width: 38%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Field</strong></p></th>
+<th class="head"><p><strong>Description</strong></p></th>
+<th class="head"><p><strong>Actors</strong></p></th>
+<th class="head"><p><strong>Example</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Workflow Name</p></td>
+<td><p>Name of the workflow Experimentation</p></td>
+<td><p>WMS</p></td>
+<td><p>federated-learning-example</p></td>
+</tr>
+<tr class="row-odd"><td><p>Workflow ID</p></td>
+<td><p>Unique identifier for a run in the workflow experimentation workflow</p></td>
+<td><p>WMS</p></td>
+<td><p>006c8ea9-560c-49d9-9adf-5e6fa82cbeb6</p></td>
+</tr>
+<tr class="row-even"><td><p>File Name</p></td>
+<td><p>Name of the file versioned by the job</p></td>
+<td><p>Versioning Jobs</p></td>
+<td><p>clusters.json</p></td>
+</tr>
+<tr class="row-odd"><td><p>Bucket Storage URL</p></td>
+<td><p>Storage URL in a bucket system</p></td>
+<td></td>
+<td><p><a class="reference external" href="mailto:pegasus&#37;&#52;&#48;osn/asc190064-bucket01/federated-learning/federated-learning-example/006c8ea9-560c-49d9-9adf-5e6fa82cbeb6/outputs/clusters&#46;json">pegasus<span>&#64;</span>osn/asc190064-bucket01/federated-learning/federated-learning-example/006c8ea9-560c-49d9-9adf-5e6fa82cbeb6/outputs/clusters<span>&#46;</span>json</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Google Drive Remote URL</p></td>
+<td><p>Remote storage URL for Google Drive</p></td>
+<td></td>
+<td><p>1mYUTXi9AMJ66Ap4Tw2uq6vmD_POE_7vU</p></td>
+</tr>
+<tr class="row-odd"><td><p>Last Modification</p></td>
+<td><p>Timestamp indicating last modification time</p></td>
+<td></td>
+<td><p>1691724673.7948298</p></td>
+</tr>
+<tr class="row-even"><td><p>Path</p></td>
+<td><p>File path in the local filesystem</p></td>
+<td></td>
+<td><p>/home/poseidon/workflows/FL-workflow/federated-learning-fedstack-PM/pegasus-data/clusters.json</p></td>
+</tr>
+<tr class="row-odd"><td><p>Size</p></td>
+<td><p>Size of the file in bytes</p></td>
+<td></td>
+<td><p>433 bytes</p></td>
+</tr>
+<tr class="row-even"><td><p>Timestamp</p></td>
+<td><p>Timestamp when the file was last modified</p></td>
+<td></td>
+<td><p>2023-08-11 03:31:41.638165</p></td>
+</tr>
+<tr class="row-odd"><td><p>Type</p></td>
+<td><p>Type of the file (e.g., Inputs, Outputs, wf)</p></td>
+<td></td>
+<td><p>Outputs</p></td>
+</tr>
+<tr class="row-even"><td><p>Version</p></td>
+<td><p>Version identifier associated with the file</p></td>
+<td></td>
+<td><p>091fa8cf61dcbf33996d109c363443fb890d087ededd40d200366a396618944c</p></td>
+</tr>
+<tr class="row-odd"><td><p>env</p></td>
+<td><p>Information about the execution environment</p></td>
+<td></td>
+<td><p>Details regarding the computational resources where the workflow is run, including operating system, available memory, CPU architecture</p></td>
+</tr>
+<tr class="row-even"><td><p>mlflow_url</p></td>
+<td><p>Direct link to the MLflow run associated with the job</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://dagshub.com/swarmourr/FL-WF.mlflow/#/experiments/8/runs/73ce10d8e29b4fbd987b83a33261ed4d">https://dagshub.com/swarmourr/FL-WF.mlflow/#/experiments/8/runs/73ce10d8e29b4fbd987b83a33261ed4d</a>
+8e29b4fbd987b83a33261ed4d</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="pegasus-wms-tracking-capabilities">
+<h3>Pegasus-WMS Tracking Capabilities<a class="headerlink" href="#pegasus-wms-tracking-capabilities" title="Permalink to this heading">¶</a></h3>
+<table class="colwidths-given docutils align-default" id="id8">
+<caption><span class="caption-text">Pegasus-WMS Tracking Capabilities</span><a class="headerlink" href="#id8" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Tracking Type</strong></p></th>
+<th class="head"><p><strong>Dynamic</strong></p></th>
+<th class="head"></th>
+<th class="head"><p><strong>Custom</strong></p></th>
+<th class="head"></th>
+<th class="head"></th>
+<th class="head"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Elements &amp; Tags</strong></p></td>
+<td><p><strong>Basic Tracking</strong></p></td>
+<td><p><strong>Full Tracking</strong></p></td>
+<td><p><strong>Input Tracking</strong></p></td>
+<td><p><strong>Output Tracking</strong></p></td>
+<td><p><strong>WF Tracking</strong></p></td>
+<td><p><strong>Transformation Tracking</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Workflow description</strong></p></td>
+<td></td>
+<td><p>✔️</p></td>
+<td></td>
+<td></td>
+<td><p>✔️</p></td>
+<td><p>❌</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Workflow instance/version</strong></p></td>
+<td></td>
+<td><p>✔️</p></td>
+<td><p>✔️</p></td>
+<td><p>✔️</p></td>
+<td><p>✔️</p></td>
+<td><p>❌</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Logical file names</strong></p></td>
+<td><p>✔️</p></td>
+<td><p>✔️</p></td>
+<td><p>✔️</p></td>
+<td><p>✔️</p></td>
+<td><p>✔️</p></td>
+<td><p>❌</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Physical Input files</strong></p></td>
+<td><p>✔️</p></td>
+<td><p>✔️</p></td>
+<td><p>✔️</p></td>
+<td><p>❌</p></td>
+<td><p>❌</p></td>
+<td><p>❌</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Physical Output files</strong></p></td>
+<td><p>✔️</p></td>
+<td><p>✔️</p></td>
+<td><p>❌</p></td>
+<td><p>✔️</p></td>
+<td><p>❌</p></td>
+<td><p>❌</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Physical Intermediate files</strong></p></td>
+<td><p>✔️</p></td>
+<td><p>✔️</p></td>
+<td><p>✔️</p></td>
+<td><p>✔️</p></td>
+<td><p>❌</p></td>
+<td><p>❌</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Logical Transformations</strong></p></td>
+<td></td>
+<td><p>✔️</p></td>
+<td><p>❌</p></td>
+<td><p>❌</p></td>
+<td><p>❌</p></td>
+<td><p>✔️</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Physical Transformations</strong></p></td>
+<td></td>
+<td><p>✔️</p></td>
+<td><p>❌</p></td>
+<td><p>❌</p></td>
+<td><p>❌</p></td>
+<td><p>✔️</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Codes</strong></p></td>
+<td></td>
+<td><p>✔️</p></td>
+<td><p>❌</p></td>
+<td><p>❌</p></td>
+<td><p>❌</p></td>
+<td><p>✔️</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Declaration location</strong></p></td>
+<td><p>Workflow Declaration</p></td>
+<td><p>Workflow Declaration</p></td>
+<td><p>File Declaration</p></td>
+<td><p>File Declaration</p></td>
+<td><p>Workflow Declaration</p></td>
+<td><p>Transformations Declaration</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="tutorials.html" class="btn btn-neutral float-right" title="Examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to pegasus-wms Tracking pkg’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2024,  pegasus-WMS.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
